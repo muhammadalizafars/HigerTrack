@@ -1,0 +1,60 @@
+## ASP.NET Core ##
+# Windows
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+# User-specific files
+.idea/
+.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Node.js modules
+node_modules/
+
+# ASP.NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Tye (https://github.com/dotnet/tye)
+.tye/
+
+# Azure Functions
+local.settings.json
+
+# .NET Core build output
+bin/
+obj/
+
+# VS for Mac
+.vscode/
+
+# .NET Core / ASP.NET Core specific ignores
+*.vspscc
+.vs2019/
+.vs2017/
+.vs/
+.idea/
+
+# Logs
+*.log
