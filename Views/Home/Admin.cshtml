@@ -2,6 +2,60 @@
     ViewData["Title"] = "Admin Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to Admin page</h1>
+<style>
+    html,
+    body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar {
+        width: 100vw;
+        height: 60px;
+        background: #222;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        padding-left: 32px;
+        font-size: 1.5rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10000;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .fullscreen-map {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        width: 100vw;
+        height: calc(100vh - 60px);
+        z-index: 9999;
+    }
+
+    #map {
+        width: 100vw;
+        height: 100%;
+    }
+</style>
+<div class="navbar">
+    Admin Page
 </div>
+<div class="fullscreen-map">
+    <div id="map"></div>
+</div>
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4jqcen5Xqrgck4V73aL6VepyKp2_wK1U&callback=initMap"></script>
+<script>
+    function initMap() {
+        var center = { lat: -6.914744, lng: 107.609810 };
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 10,
+            center: center
+        });
+    }
+    window.onload = initMap;
+</script>
