@@ -56,10 +56,27 @@ namespace HigerTrack.Controllers.Api
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetMapPoints()
         {
-            var allPoints = await _context.MapPoints.ToListAsync();
-            return Ok(allPoints);
+            var baseUrl = $"{Request.Scheme}://{Request.Host}";
+
+            var points = await _context.MapPoints
+                .OrderByDescending(p => p.CreatedAt)
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Title,
+                    p.Description,
+                    p.Latitude,
+                    p.Longitude,
+                    ImageUrl = baseUrl + p.ImageUrl, // full URL
+                    p.CreatedAt,
+                    p.CreatedBy
+                })
+                .ToListAsync();
+
+            return Ok(points);
         }
+
     }
 }
