@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\HigerTrack.csproj": {}
+    "C:\\Users\\ice\\Documents\\Magang\\HigerTrack\\HigerTrack.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\HigerTrack.csproj": {
+    "C:\\Users\\ice\\Documents\\Magang\\HigerTrack\\HigerTrack.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\HigerTrack.csproj",
+        "projectUniqueName": "C:\\Users\\ice\\Documents\\Magang\\HigerTrack\\HigerTrack.csproj",
         "projectName": "HigerTrack",
-        "projectPath": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\HigerTrack.csproj",
-        "packagesPath": "C:\\Users\\Ice\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\obj\\",
+        "projectPath": "C:\\Users\\ice\\Documents\\Magang\\HigerTrack\\HigerTrack.csproj",
+        "packagesPath": "C:\\Users\\ice\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ice\\Documents\\Magang\\HigerTrack\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Ice\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ice\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

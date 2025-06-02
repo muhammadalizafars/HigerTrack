@@ -1,26 +1,13 @@
 ## ASP.NET Core ##
-# Windows
 # User-specific files
 *.user
 *.userosscache
 *.suo
 *.userprefs
 
-# User-specific files
+# IDE directories
 .idea/
 .vscode/
-
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
-
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
 
 # Windows Installer files
 *.cab
@@ -46,6 +33,10 @@ local.settings.json
 bin/
 obj/
 
+# Cache directories
+.cache/
+cache/
+
 # VS for Mac
 .vscode/
 
@@ -54,7 +45,6 @@ obj/
 .vs2019/
 .vs2017/
 .vs/
-.idea/
 
 # Logs
 *.log

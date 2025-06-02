@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HigerTrack")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+41a221c55c8cbd706da41e5e778dacb4975c1d57")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+09199e6d57e38135ba7b93f449eadeefbe7c857e")]
 [assembly: System.Reflection.AssemblyProductAttribute("HigerTrack")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HigerTrack")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
