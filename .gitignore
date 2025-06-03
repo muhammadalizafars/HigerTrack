@@ -50,3 +50,7 @@ cache/
 *.log
 
 /wwwroot/uploads/
+
+# Ignore appsettings files
+appsettings.json
+appsettings.Development.json

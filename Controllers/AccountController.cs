@@ -144,7 +144,7 @@ namespace HigerTrack.Controllers
 
             var user = await userManager.FindByNameAsync(model.Email);
 
-            if(user == null)
+            if (user == null)
             {
                 ModelState.AddModelError("", "User not found!");
                 return View(model);
@@ -158,7 +158,7 @@ namespace HigerTrack.Controllers
             }
             else
             {
-                foreach(var error in result.Errors)
+                foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
                 }

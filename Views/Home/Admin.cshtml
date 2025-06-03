@@ -1,3 +1,5 @@
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<Users> signInManager;
 @{
     ViewData["Title"] = "Admin Page";
 }
@@ -25,6 +27,39 @@
         left: 0;
         z-index: 10000;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        justify-content: space-between;
+        padding-right: 32px;
+    }
+
+    .navbar-btn, .navbar-btn:visited {
+        color: #fff !important;
+        background: transparent;
+        border: none;
+        font-size: 1rem;
+        padding: 8px 18px;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.2s, color 0.2s;
+        outline: none;
+    }
+    .navbar-btn:hover, .navbar-btn:focus {
+        background: #444;
+        color: #ffd700 !important;
+        text-decoration: none;
+    }
+    .logout-btn {
+        background: #e74c3c;
+        color: #fff;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .logout-btn:hover {
+        background: #c0392b;
     }
 
     .fullscreen-map {
@@ -41,8 +76,32 @@
         height: 100%;
     }
 </style>
-<div class="navbar">
-    Admin Page
+<div class="navbar" style="display: flex; justify-content: space-between; align-items: center;">
+    <a asp-controller="Home" asp-action="Index" class="navbar-btn" style="font-size:1.5rem; font-weight:bold; text-decoration:none;">Admin Page</a>
+    <ul class="navbar-nav ms-auto align-items-center" style="display: flex; gap: 16px; margin: 0; padding: 0; list-style: none;">
+        @if (signInManager.IsSignedIn(User))
+        {
+            <li class="nav-item">
+                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="navbar-btn logout-btn">Logout</button>
+                </form>
+            </li>
+        }
+        else
+        {
+            <li class="nav-item">
+                <a class="navbar-btn" asp-controller="Account" asp-action="Login">
+                    Login
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="navbar-btn" asp-controller="Account" asp-action="Register">
+                    Register
+                </a>
+            </li>
+        }
+    </ul>
 </div>
 <div class="fullscreen-map">
     <div id="map"></div>
