@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HigerTrack.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250525165949_InitialCreate")]
+    [Migration("20250604025621_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,6 +24,46 @@ namespace HigerTrack.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("HigerTrack.Models.MapPoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.ToTable("MapPoints", (string)null);
+                });
 
             modelBuilder.Entity("HigerTrack.Models.Users", b =>
                 {
@@ -222,6 +262,17 @@ namespace HigerTrack.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("HigerTrack.Models.MapPoint", b =>
+                {
+                    b.HasOne("HigerTrack.Models.Users", "CreatedUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CreatedUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

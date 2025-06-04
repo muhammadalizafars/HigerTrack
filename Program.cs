@@ -2,7 +2,10 @@ using HigerTrack.Data;
 using HigerTrack.Models;
 using HigerTrack.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,9 +26,29 @@ builder.Services.AddIdentity<Users, IdentityRole>(options =>
     options.SignIn.RequireConfirmedEmail = false;
     options.SignIn.RequireConfirmedPhoneNumber = false;
 })
-
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+// JWT Authentication Configuration
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+});
 
 var app = builder.Build();
 
@@ -35,16 +58,15 @@ await SeedService.SeedDatabase(app.Services);
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthentication();
-
 app.UseAuthorization();
+
+app.UseAuthentication();
 
 app.UseStaticFiles();
 
@@ -56,6 +78,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

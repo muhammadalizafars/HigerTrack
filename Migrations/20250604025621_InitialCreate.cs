@@ -158,6 +158,31 @@ namespace HigerTrack.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "MapPoints",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Latitude = table.Column<double>(type: "double precision", nullable: false),
+                    Longitude = table.Column<double>(type: "double precision", nullable: false),
+                    ImageUrl = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MapPoints", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MapPoints_AspNetUsers_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -194,6 +219,11 @@ namespace HigerTrack.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MapPoints_CreatedBy",
+                table: "MapPoints",
+                column: "CreatedBy");
         }
 
         /// <inheritdoc />
@@ -213,6 +243,9 @@ namespace HigerTrack.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "MapPoints");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

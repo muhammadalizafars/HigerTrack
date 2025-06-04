@@ -1,8 +1,14 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using HigerTrack.Data;
 using HigerTrack.Models;
 using HigerTrack.Models.Dto;
-using HigerTrack.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace HigerTrack.Controllers.Api
 {
@@ -19,23 +25,32 @@ namespace HigerTrack.Controllers.Api
             _env = env;
         }
 
+        /// <summary>
+        /// Membuat titik peta baru. Hanya untuk user yang sudah login.
+        /// </summary>
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateMapPoint([FromForm] MapPointDto dto)
         {
-            string? imageUrl = null;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+                return Unauthorized("User tidak terautentikasi.");
 
+            string? imageUrl = null;
             if (dto.Image != null && dto.Image.Length > 0)
             {
                 var uploadsPath = Path.Combine(_env.WebRootPath, "uploads");
                 Directory.CreateDirectory(uploadsPath);
 
-                var fileName = Guid.NewGuid() + Path.GetExtension(dto.Image.FileName);
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(dto.Image.FileName)}";
                 var fullPath = Path.Combine(uploadsPath, fileName);
 
-                using var stream = new FileStream(fullPath, FileMode.Create);
-                await dto.Image.CopyToAsync(stream);
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    await dto.Image.CopyToAsync(stream);
+                }
 
-                imageUrl = "/uploads/" + fileName;
+                imageUrl = $"/uploads/{fileName}";
             }
 
             var mapPoint = new MapPoint
@@ -45,16 +60,19 @@ namespace HigerTrack.Controllers.Api
                 Latitude = dto.Latitude,
                 Longitude = dto.Longitude,
                 ImageUrl = imageUrl,
-                CreatedBy = dto.CreatedBy,
+                CreatedBy = userId,
                 CreatedAt = DateTime.UtcNow
             };
 
             _context.MapPoints.Add(mapPoint);
             await _context.SaveChangesAsync();
 
-            return Ok(mapPoint);
+            return Ok(new { message = "Titik berhasil disimpan", id = mapPoint.Id });
         }
 
+        /// <summary>
+        /// Mengambil semua titik peta.
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetMapPoints()
         {
@@ -69,7 +87,7 @@ namespace HigerTrack.Controllers.Api
                     p.Description,
                     p.Latitude,
                     p.Longitude,
-                    ImageUrl = baseUrl + p.ImageUrl, // full URL
+                    ImageUrl = p.ImageUrl != null ? baseUrl + p.ImageUrl : null,
                     p.CreatedAt,
                     p.CreatedBy
                 })
@@ -77,6 +95,5 @@ namespace HigerTrack.Controllers.Api
 
             return Ok(points);
         }
-
     }
 }

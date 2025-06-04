@@ -22,6 +22,42 @@ namespace HigerTrack.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("HigerTrack.Models.MapPoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.ToTable("MapPoints", (string)null);
+                });
+
             modelBuilder.Entity("HigerTrack.Models.Users", b =>
                 {
                     b.Property<string>("Id")
@@ -87,43 +123,6 @@ namespace HigerTrack.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("MapPoint", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("Latitude")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MapPoints", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -258,6 +257,40 @@ namespace HigerTrack.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
+            modelBuilder.Entity("HigerTrack.Models.MapPoint", b =>
+                {
+                    b.HasOne("HigerTrack.Models.Users", "CreatedUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("CreatedUser");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -307,6 +340,15 @@ namespace HigerTrack.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("RefreshToken", b =>
+                {
+                    b.HasOne("HigerTrack.Models.Users", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

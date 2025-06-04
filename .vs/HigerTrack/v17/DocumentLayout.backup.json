@@ -11,12 +11,28 @@
       "RelativeMoniker": "D:0:0:{9647F96F-EAC4-46A5-BFCC-C115BA3C7015}|HigerTrack.csproj|solutionrelative:viewmodels\\verifyemailviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{9647F96F-EAC4-46A5-BFCC-C115BA3C7015}|HigerTrack.csproj|c:\\users\\ice\\documents\\magang\\higertrack\\viewmodels\\changepasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9647F96F-EAC4-46A5-BFCC-C115BA3C7015}|HigerTrack.csproj|solutionrelative:viewmodels\\changepasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{9647F96F-EAC4-46A5-BFCC-C115BA3C7015}|HigerTrack.csproj|c:\\users\\ice\\documents\\magang\\higertrack\\viewmodels\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9647F96F-EAC4-46A5-BFCC-C115BA3C7015}|HigerTrack.csproj|solutionrelative:viewmodels\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9647F96F-EAC4-46A5-BFCC-C115BA3C7015}|HigerTrack.csproj|c:\\users\\ice\\documents\\magang\\higertrack\\viewmodels\\changepasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9647F96F-EAC4-46A5-BFCC-C115BA3C7015}|HigerTrack.csproj|solutionrelative:viewmodels\\changepasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9647F96F-EAC4-46A5-BFCC-C115BA3C7015}|HigerTrack.csproj|c:\\users\\ice\\documents\\magang\\higertrack\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{9647F96F-EAC4-46A5-BFCC-C115BA3C7015}|HigerTrack.csproj|solutionrelative:views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9647F96F-EAC4-46A5-BFCC-C115BA3C7015}|HigerTrack.csproj|c:\\users\\ice\\documents\\magang\\higertrack\\views\\account\\changepassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{9647F96F-EAC4-46A5-BFCC-C115BA3C7015}|HigerTrack.csproj|solutionrelative:views\\account\\changepassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9647F96F-EAC4-46A5-BFCC-C115BA3C7015}|HigerTrack.csproj|c:\\users\\ice\\documents\\magang\\higertrack\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{9647F96F-EAC4-46A5-BFCC-C115BA3C7015}|HigerTrack.csproj|solutionrelative:views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9647F96F-EAC4-46A5-BFCC-C115BA3C7015}|HigerTrack.csproj|c:\\users\\ice\\documents\\magang\\higertrack\\views\\account\\verifyemail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{9647F96F-EAC4-46A5-BFCC-C115BA3C7015}|HigerTrack.csproj|solutionrelative:views\\account\\verifyemail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9647F96F-EAC4-46A5-BFCC-C115BA3C7015}|HigerTrack.csproj|c:\\users\\ice\\documents\\magang\\higertrack\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -58,24 +74,63 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "_LoginPartial.cshtml",
-              "DocumentMoniker": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\Views\\Shared\\_LoginPartial.cshtml",
-              "RelativeDocumentMoniker": "Views\\Shared\\_LoginPartial.cshtml",
-              "ToolTip": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\Views\\Shared\\_LoginPartial.cshtml",
-              "RelativeToolTip": "Views\\Shared\\_LoginPartial.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAFAAAAAAAAAA==",
+              "Title": "ChangePassword.cshtml",
+              "DocumentMoniker": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\Views\\Account\\ChangePassword.cshtml",
+              "RelativeDocumentMoniker": "Views\\Account\\ChangePassword.cshtml",
+              "ToolTip": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\Views\\Account\\ChangePassword.cshtml",
+              "RelativeToolTip": "Views\\Account\\ChangePassword.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-26T02:30:11.493Z",
+              "WhenOpened": "2025-05-26T02:39:11.387Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\Views\\Account\\Login.cshtml",
+              "RelativeDocumentMoniker": "Views\\Account\\Login.cshtml",
+              "ToolTip": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\Views\\Account\\Login.cshtml",
+              "RelativeToolTip": "Views\\Account\\Login.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-05-26T02:39:10.499Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Register.cshtml",
+              "DocumentMoniker": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\Views\\Account\\Register.cshtml",
+              "RelativeDocumentMoniker": "Views\\Account\\Register.cshtml",
+              "ToolTip": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\Views\\Account\\Register.cshtml",
+              "RelativeToolTip": "Views\\Account\\Register.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-05-26T02:38:34.754Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "VerifyEmail.cshtml",
+              "DocumentMoniker": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\Views\\Account\\VerifyEmail.cshtml",
+              "RelativeDocumentMoniker": "Views\\Account\\VerifyEmail.cshtml",
+              "ToolTip": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\Views\\Account\\VerifyEmail.cshtml",
+              "RelativeToolTip": "Views\\Account\\VerifyEmail.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-05-26T02:38:00.425Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
@@ -88,7 +143,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 13,
               "Title": "_AccountLayout.cshtml",
               "DocumentMoniker": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\Views\\Shared\\_AccountLayout.cshtml",
               "RelativeDocumentMoniker": "Views\\Shared\\_AccountLayout.cshtml",
@@ -120,14 +175,14 @@
               "RelativeDocumentMoniker": "ViewModels\\RegisterViewModel.cs",
               "ToolTip": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\ViewModels\\RegisterViewModel.cs",
               "RelativeToolTip": "ViewModels\\RegisterViewModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAwBkAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-25T17:37:00.219Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "LoginViewModel.cs",
               "DocumentMoniker": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\ViewModels\\LoginViewModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\LoginViewModel.cs",
@@ -140,7 +195,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "ChangePasswordViewModel.cs",
               "DocumentMoniker": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\ViewModels\\ChangePasswordViewModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\ChangePasswordViewModel.cs",
@@ -153,7 +208,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
+              "Title": "_LoginPartial.cshtml",
+              "DocumentMoniker": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\Views\\Shared\\_LoginPartial.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_LoginPartial.cshtml",
+              "ToolTip": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\Views\\Shared\\_LoginPartial.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_LoginPartial.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-05-26T02:30:11.493Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
               "Title": "SeedService.cs",
               "DocumentMoniker": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\Services\\SeedService.cs",
               "RelativeDocumentMoniker": "Services\\SeedService.cs",
@@ -166,7 +234,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 8,
               "Title": "AccountController.cs",
               "DocumentMoniker": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "Controllers\\AccountController.cs",
@@ -179,7 +247,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 12,
               "Title": "account.css",
               "DocumentMoniker": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\wwwroot\\css\\account.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\account.css",
@@ -192,7 +260,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 14,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -205,12 +273,12 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 15,
               "Title": "HigerTrack",
               "DocumentMoniker": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\HigerTrack.csproj",
               "RelativeDocumentMoniker": "HigerTrack.csproj",
-              "ToolTip": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\HigerTrack.csproj*",
-              "RelativeToolTip": "HigerTrack.csproj*",
+              "ToolTip": "C:\\Users\\Ice\\Documents\\Magang\\HigerTrack\\HigerTrack.csproj",
+              "RelativeToolTip": "HigerTrack.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
               "WhenOpened": "2025-05-25T17:10:22.962Z",

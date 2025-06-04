@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http;
-
 namespace HigerTrack.Models.Dto
 {
     public class MapPointDto
@@ -9,6 +7,5 @@ namespace HigerTrack.Models.Dto
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public IFormFile? Image { get; set; }
-        public int CreatedBy { get; set; } // user ID dari aplikasi mobile
     }
 }
