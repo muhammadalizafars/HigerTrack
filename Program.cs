@@ -4,6 +4,7 @@ using HigerTrack.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -32,10 +33,15 @@ builder.Services.AddIdentity<Users, IdentityRole>(options =>
 // JWT Authentication Configuration
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-.AddJwtBearer(options =>
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+{
+    options.LoginPath = "/Account/Login"; // Ganti jika login page beda
+    options.LogoutPath = "/Account/Logout";
+})
+.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
 {
     var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
     options.TokenValidationParameters = new TokenValidationParameters
@@ -64,9 +70,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthorization();
-
 app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.UseStaticFiles();
 
