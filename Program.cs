@@ -30,15 +30,25 @@ builder.Services.AddIdentity<Users, IdentityRole>(options =>
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-// JWT Authentication Configuration
+// Policy scheme: use Cookie for web, JWT for API
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = "AppAuthScheme";
+})
+.AddPolicyScheme("AppAuthScheme", "Authorization Bearer or Cookie", options =>
+{
+    options.ForwardDefaultSelector = context =>
+    {
+        // If request has Authorization header with Bearer, use JWT, else use Cookie
+        string? authHeader = context.Request.Headers["Authorization"];
+        if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
+            return JwtBearerDefaults.AuthenticationScheme;
+        return CookieAuthenticationDefaults.AuthenticationScheme;
+    };
 })
 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
 {
-    options.LoginPath = "/Account/Login"; // Ganti jika login page beda
+    options.LoginPath = "/Account/Login";
     options.LogoutPath = "/Account/Logout";
 })
 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
@@ -71,13 +81,11 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.UseStaticFiles();
 
 app.MapControllers();
-
 app.MapStaticAssets();
 
 app.MapControllerRoute(

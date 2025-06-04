@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using HigerTrack.Data;
 using HigerTrack.Models;
 using HigerTrack.Models.Dto;
+using Microsoft.AspNetCore.Authentication.JwtBearer; // Tambahkan ini
 
 namespace HigerTrack.Controllers.Api
 {
@@ -29,7 +30,7 @@ namespace HigerTrack.Controllers.Api
         /// Membuat titik peta baru. Hanya untuk user yang sudah login.
         /// </summary>
         [HttpPost]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> CreateMapPoint([FromForm] MapPointDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -74,6 +75,7 @@ namespace HigerTrack.Controllers.Api
         /// Mengambil semua titik peta.
         /// </summary>
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // Tambahkan ini jika GET juga harus pakai JWT
         public async Task<IActionResult> GetMapPoints()
         {
             var baseUrl = $"{Request.Scheme}://{Request.Host}";
