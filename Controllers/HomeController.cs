@@ -1,22 +1,29 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using HigerTrack.Models;
+using HigerTrack.Data;
 
 namespace HigerTrack.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly AppDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var mapPoints = _context.MapPoints
+                .Include(mp => mp.CreatedUser)
+                .ToList();
+            return View(mapPoints);
         }
 
         [Authorize]
