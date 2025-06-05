@@ -55,3 +55,4 @@ cache/
 appsettings.json
 appsettings.Development.json
 
+Migrations/
