@@ -54,3 +54,4 @@ cache/
 # Ignore appsettings files
 appsettings.json
 appsettings.Development.json
+

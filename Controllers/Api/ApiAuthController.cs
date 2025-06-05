@@ -132,7 +132,8 @@ namespace HigerTrack.Controllers
                 RefreshToken = refreshToken.Token,
                 Expiration = expires,
                 Email = user.Email,
-                Role = roles.FirstOrDefault()
+                Role = roles.FirstOrDefault(),
+                FullName = user.FullName // Tambahkan ini
             };
         }
     }
