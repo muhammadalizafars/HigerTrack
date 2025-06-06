@@ -1,21 +1,223 @@
-﻿.account-container {
-    background-image: url('../img/1.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: repeat-y;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 2rem 0;
+﻿/* Wrapper & Card */
+.login-wrapper {
+  background: linear-gradient(to right, rgb(0, 26, 61), #161643);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
-.account-box {
-    background-color: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    max-width: 500px;
+.login-card {
+  background: #fff;
+  padding: 40px 30px;
+  border-radius: 20px;
+  width: 400px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Logo */
+.logo-container {
+  margin-bottom: 20px;
+}
+.logo-img {
+  width: 100px;
+  height: 100px;
+}
+.login-title {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Tabs */
+.toggle-btn-group {
+  display: flex;
+  justify-content: space-between;
+  background: #eee;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.toggle-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  color: #000;
+  text-align: center;
+  text-decoration: none;
+}
+.toggle-btn.active {
+  background: linear-gradient(to right, #002f6c, #007bff);
+  color: white;
+  border-radius: 12px;
+}
+
+/* Inputs & Buttons */
+.form-input {
+  border-radius: 10px;
+  height: 45px;
+  font-size: 14px;
+  padding-left: 15px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+/* Password wrapper */
+.password-wrapper {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  color: #555;
+}
+
+.btn-login {
+  background: linear-gradient(to right, #0047ab, #005bbb);
+  border: none;
+  color: white;
+  font-weight: bold;
+  padding: 12px;
+  border-radius: 12px;
+  transition: background 0.3s;
+}
+.btn-login:hover {
+  background: #021d46;
+  color: white;
+}
+
+/* Links */
+.link-blue {
+  color: #1d4ed8;
+  text-decoration: none;
+  font-weight: 500;
+}
+.link-blue:hover {
+  text-decoration: underline;
+}
+
+/* Tablet (max 768px) */
+@media (max-width: 768px) {
+  .login-card {
+    width: 90%;
+    padding: 30px 20px;
+  }
+
+  .login-title {
+    font-size: 22px;
+  }
+
+  .logo-img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .toggle-btn {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .form-input {
+    height: 40px;
+    font-size: 13px;
+  }
+
+  .btn-login {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+/* Mobile (max 480px) */
+@media (max-width: 480px) {
+  .login-wrapper {
+    padding: 15px;
+  }
+
+  .login-card {
     width: 100%;
-    opacity: .9;
+    padding: 25px 15px;
+    border-radius: 15px;
+  }
+
+  .login-title {
+    font-size: 20px;
+  }
+
+  .logo-img {
+    width: 45px;
+    height: 45px;
+  }
+
+  .toggle-btn {
+    font-size: 13px;
+    padding: 7px;
+  }
+
+  .form-input {
+    height: 38px;
+    font-size: 12px;
+    padding-left: 12px;
+  }
+
+  .btn-login {
+    font-size: 13px;
+    padding: 9px;
+  }
+
+  .toggle-password {
+    font-size: 16px;
+    right: 12px;
+  }
+}
+
+/* Password wrapper */
+.password-wrapper {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  color: #555;
+}
+
+/* Responsive adjustments jika perlu */
+@media (max-width: 480px) {
+  .toggle-password {
+    font-size: 16px;
+    right: 12px;
+  }
+}
+
+.extra-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0px;
+}
+
+.extra-links a {
+  font-size: 17px;
+  color: #1d4ed8;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-weight: bold; /* ini yang ditambahkan */
+}
+
+.extra-links a:hover {
+  color: #0a2b80;
+  text-decoration: underline;
 }

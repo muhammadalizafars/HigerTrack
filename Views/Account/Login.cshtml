@@ -6,47 +6,70 @@
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }
 
-<div class="account-container">
-    <div class="account-box">
-        <h2 class="text-center mb-4">Login</h2>
+<link rel="stylesheet" href="~/css/login.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+
+<div class="login-wrapper">
+    <div class="login-card">
+        <div class="logo-container text-center">
+            <img src="~/img/Logo/LogoHigertrack.PNG" alt="Logo" class="logo-img" />
+            <h2 class="login-title">Login Form</h2>
+        </div>
+
+        <div class="toggle-btn-group mb-3">
+            <button type="button" class="toggle-btn active">Login</button>
+            <a asp-action="Register" class="toggle-btn">Register</a>
+        </div>
+
         <form asp-action="Login" method="post">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+
+            <input asp-for="Email" class="form-control form-input" placeholder="Email Address" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+
+            <div class="password-wrapper mt-3">
+                <input asp-for="Password" type="password" class="form-control form-input" placeholder="Password"
+                    id="passwordInput" />
+                <span class="toggle-password" onclick="togglePassword()">
+                    <i id="toggleIcon" class="fa fa-eye-slash"></i>
+                </span>
             </div>
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
+            <span asp-validation-for="Password" class="text-danger"></span>
+
+            <div class="extra-links text-end mt-2">
+                <a asp-controller="Account" asp-action="ChangePassword" class="link-blue">Change
+                    password</a><br /><br />
+                <a asp-controller="Account" asp-action="VerifyEmail" class="link-blue">Forgot password?</a>
             </div>
-            <div class="float-end">
-                <a asp-controller="Account" asp-action="VerifyEmail" class="text-decoration-none">
-                    Forgot password?
-                </a>
-            </div>
-            <div class="form-check mb-3">
-                <label class="form-check-label">
-                    <input asp-for="RememberMe" class="form-check-input" />
-                    @Html.DisplayNameFor(a => a.RememberMe)
-                </label>
-            </div>
-            <input type="submit" value="Login" class="btn btn-success w-100 p-2" />
-            <p class="text-center mt-2">
-                Don't have an account? <a asp-controller="Account" asp-action="Register"
-                    class="text-decoration-none">Register</a>
+
+            <input type="submit" value="Login" class="btn btn-login w-100 mt-3" />
+
+            <p class="text-center mt-3">
+                <a asp-controller="Home" asp-action="Index" class="link-blue">Kembali ke Halaman Utama</a>
             </p>
-            <div class="text-center">
-                <a asp-controller="Home" asp-action="Index" class="text-decoration-none mt-3">Back</a>
-            </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
-    }
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById("passwordInput");
+            const toggleIcon = document.getElementById("toggleIcon");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleIcon.classList.remove("fa-eye-slash");
+                toggleIcon.classList.add("fa-eye");
+            } else {
+                passwordInput.type = "password";
+                toggleIcon.classList.remove("fa-eye");
+                toggleIcon.classList.add("fa-eye-slash");
+            }
+        }
+    </script>
+
+    @await Html.PartialAsync("_ValidationScriptsPartial.cshtml")
 }

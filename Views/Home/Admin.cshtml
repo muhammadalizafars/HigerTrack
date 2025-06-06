@@ -31,7 +31,8 @@
         padding-right: 32px;
     }
 
-    .navbar-btn, .navbar-btn:visited {
+    .navbar-btn,
+    .navbar-btn:visited {
         color: #fff !important;
         background: transparent;
         border: none;
@@ -43,11 +44,14 @@
         transition: background 0.2s, color 0.2s;
         outline: none;
     }
-    .navbar-btn:hover, .navbar-btn:focus {
+
+    .navbar-btn:hover,
+    .navbar-btn:focus {
         background: #444;
         color: #ffd700 !important;
         text-decoration: none;
     }
+
     .logout-btn {
         background: #e74c3c;
         color: #fff;
@@ -58,6 +62,7 @@
         cursor: pointer;
         transition: background 0.2s;
     }
+
     .logout-btn:hover {
         background: #c0392b;
     }
@@ -77,8 +82,10 @@
     }
 </style>
 <div class="navbar" style="display: flex; justify-content: space-between; align-items: center;">
-    <a asp-controller="Home" asp-action="Index" class="navbar-btn" style="font-size:1.5rem; font-weight:bold; text-decoration:none;">Admin Page</a>
-    <ul class="navbar-nav ms-auto align-items-center" style="display: flex; gap: 16px; margin: 0; padding: 0; list-style: none;">
+    <a asp-controller="Home" asp-action="Index" class="navbar-btn"
+        style="font-size:1.5rem; font-weight:bold; text-decoration:none;">Admin Page</a>
+    <ul class="navbar-nav ms-auto align-items-center"
+        style="display: flex; gap: 16px; margin: 0; padding: 0; list-style: none;">
         @if (signInManager.IsSignedIn(User))
         {
             <li class="nav-item">

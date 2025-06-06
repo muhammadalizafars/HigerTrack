@@ -6,20 +6,24 @@
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }
 
-<div class="account-container">
-    <div class="account-box">
-        <h2 class="text-center mb-4">Verify Email</h2>
+<div class="login-wrapper">
+    <div class="login-card">
+        <div class="logo-container text-center">
+            <img src="~/img/Logo/LogoHigertrack.PNG" alt="Logo" class="logo-img" />
+            <h2 class="login-title">Verify Email</h2>
+        </div>
+
         <form asp-action="VerifyEmail" method="post">
             @Html.AntiForgeryToken()
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <input type="submit" value="Verify" class="btn btn-success w-100 p-2" />
-            <div class="text-center mt-2">
-                <a asp-controller="Account" asp-action="Login" class="text-decoration-none mt-3">Back</a>
+            <div asp-validation-summary="ModelOnly" class="text-danger text-center mb-2"></div>
+
+            <input asp-for="Email" class="form-control form-input" placeholder="Email Address" />
+            <span asp-validation-for="Email" class="text-danger small"></span>
+
+            <button type="submit" class="btn btn-login w-100 mt-3">Verify</button>
+
+            <div class="text-center mt-3">
+                <a asp-controller="Account" asp-action="Login" class="link-blue">Back</a>
             </div>
         </form>
     </div>

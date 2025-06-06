@@ -6,45 +6,91 @@
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }
 
-<div class="account-container">
-    <div class="account-box">
-        <h2 class="text-center mb-4">Register</h2>
+<link rel="stylesheet" href="~/css/login.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+
+<div class="login-wrapper">
+    <div class="login-card">
+        <div class="logo-container text-center">
+            <img src="~/img/Logo/LogoHigertrack.PNG" alt="Logo" class="logo-img" />
+            <h2 class="login-title">Register Form</h2>
+        </div>
+
+        <div class="toggle-btn-group mb-4">
+            <a asp-action="Login" class="toggle-btn">Login</a>
+            <span class="toggle-btn active">Register</span>
+        </div>
+
         <form asp-action="Register" method="post">
             @Html.AntiForgeryToken()
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="mb-3">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+            <div asp-validation-summary="ModelOnly" class="text-danger text-center mb-2"></div>
+
+            <input asp-for="Name" class="form-control form-input" placeholder="Full Name" />
+            <span asp-validation-for="Name" class="text-danger small"></span>
+
+            <input asp-for="Email" class="form-control form-input" placeholder="Email" />
+            <span asp-validation-for="Email" class="text-danger small"></span>
+
+            <div class="password-wrapper mt-3">
+                <input asp-for="Password" type="password" class="form-control form-input" placeholder="Password"
+                    id="registerPassword" />
+                <span class="toggle-password" onclick="toggleRegisterPassword()">
+                    <i id="toggleRegisterIcon" class="fa fa-eye-slash"></i>
+                </span>
             </div>
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+            <span asp-validation-for="Password" class="text-danger small"></span>
+
+            <div class="password-wrapper mt-3">
+                <input asp-for="ConfirmPassword" type="password" class="form-control form-input"
+                    placeholder="Confirm Password" id="confirmPassword" />
+                <span class="toggle-password" onclick="toggleConfirmPassword()">
+                    <i id="toggleConfirmIcon" class="fa fa-eye-slash"></i>
+                </span>
             </div>
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="ConfirmPassword" class="form-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
-            <input type="submit" value="Register" class="btn btn-success w-100 p-2" />
-            <p class="text-center mt-2">
-                Already have an account? <a asp-controller="Account" asp-action="Login" class="text-decoration-none">Login</a>
-            </p>
-            <div class="text-center">
-                <a asp-controller="Home" asp-action="Index" class="text-decoration-none mt-3">Back</a>
+            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+
+            <button type="submit" class="btn btn-login w-100 mt-3">Register</button>
+
+            <div class="text-center mt-2">
+                <a asp-controller="Account" asp-action="Login" class="link-blue">Back</a>
             </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
-    }
+    <script>
+        function toggleRegisterPassword() {
+            const passwordInput = document.getElementById("registerPassword");
+            const toggleIcon = document.getElementById("toggleRegisterIcon");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleIcon.classList.remove("fa-eye-slash");
+                toggleIcon.classList.add("fa-eye");
+            } else {
+                passwordInput.type = "password";
+                toggleIcon.classList.remove("fa-eye");
+                toggleIcon.classList.add("fa-eye-slash");
+            }
+        }
+
+        function toggleConfirmPassword() {
+            const passwordInput = document.getElementById("confirmPassword");
+            const toggleIcon = document.getElementById("toggleConfirmIcon");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleIcon.classList.remove("fa-eye-slash");
+                toggleIcon.classList.add("fa-eye");
+            } else {
+                passwordInput.type = "password";
+                toggleIcon.classList.remove("fa-eye");
+                toggleIcon.classList.add("fa-eye-slash");
+            }
+        }
+    </script>
+
+    @await Html.PartialAsync("_ValidationScriptsPartial.cshtml")
 }
