@@ -49,6 +49,9 @@
                         @if (User.IsInRole("User"))
                         {
                             <li class="nav-item">
+                                <a class="nav-link text-white fw-bold" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link text-white fw-bold" asp-controller="Home" asp-action="User">Users</a>
                             </li>
                         }
