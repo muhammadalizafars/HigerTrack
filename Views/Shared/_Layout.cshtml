@@ -25,47 +25,34 @@
 </style>
 
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-dark mb-3"
-            style="background-color: #1c2c67; padding: 1.2rem 1rem; box-shadow: 0 4px 3px -1px rgba(230, 15, 18, 0.6);">
-            <div class="container-fluid d-flex justify-content-between align-items-center">
+    <header id="header" class="header d-flex align-items-center fixed mb-3">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+            <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Main" asp-action="Index">
+                <img src="@Url.Content("~/img/Logo/LogoHigertrack.png")" alt="Higertrack Logo"
+                    style="height: auto; max-height: 60px; margin-right: 10px;">
+                <span class="fw-bold text-white" style="font-size: 24px;">HigerTrack</span>
+            </a>
 
-                <!-- Logo dan Teks HigerTrack -->
-                <div class="d-flex align-items-center ">
-                    <img src="~/img/Logo/LogoHigertrack.PNG" alt="Logo" style="height: 40px; margin-right: 10px;">
-                    <a class="navbar-brand text-white fw-bold fs-5" asp-area="" asp-controller="Home"
-                        asp-action="Index">HigerTrack</a>
-                </div>
 
-                <!-- Link Navigasi Berdasarkan Role -->
-                <div class="d-none d-sm-flex align-items-center">
-                    <ul class="navbar-nav me-3">
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-white fw-bold" asp-controller="Home" asp-action="Admin">Admin</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("User"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-white fw-bold" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white fw-bold" asp-controller="Home" asp-action="User">Users</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
-
-                <!-- Tombol Login / Partial -->
-                <div>
+            <nav id="navmenu" class="navmenu">
+                <ul class="navbar-nav flex-grow-1">
+                    @* <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home"
+                                asp-action="Privacy">Privacy</a>
+                        </li> *@
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Admin">Admin</a>
+                        </li>
+                    }
                     <partial name="_LoginPartial" />
-                </div>
-
-            </div>
-        </nav>
+                </ul>
+                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            </nav>
+        </div>
     </header>
+
 
 
 
