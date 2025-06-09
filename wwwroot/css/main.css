@@ -74,56 +74,6 @@ h6 {
   font-family: var(--heading-font);
 }
 
-/* PHP Email Form Messages */
-.php-email-form .error-message {
-  display: none;
-  background: #df1529;
-  color: #ffffff;
-  text-align: left;
-  padding: 15px;
-  margin-bottom: 24px;
-  font-weight: 600;
-}
-
-.php-email-form .sent-message {
-  display: none;
-  color: #ffffff;
-  background: #059652;
-  text-align: center;
-  padding: 15px;
-  margin-bottom: 24px;
-  font-weight: 600;
-}
-
-.php-email-form .loading {
-  display: none;
-  background: var(--surface-color);
-  text-align: center;
-  padding: 15px;
-  margin-bottom: 24px;
-}
-
-.php-email-form .loading:before {
-  content: "";
-  display: inline-block;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  margin: 0 10px -6px 0;
-  border: 3px solid var(--accent-color);
-  border-top-color: var(--surface-color);
-  animation: php-email-form-loading 1s linear infinite;
-}
-
-@keyframes php-email-form-loading {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 /* Global Header */
 .header {
   --background-color: #161643;
@@ -266,7 +216,7 @@ h6 {
 /* Mobile */
 @media (max-width: 1199px) {
   .mobile-nav-toggle {
-    color: var(--nav-color);
+    color: white;
     font-size: 28px;
     line-height: 0;
     margin-right: 10px;
@@ -297,7 +247,7 @@ h6 {
 
   .navmenu a,
   .navmenu a:focus {
-    color: var(--nav-dropdown-color);
+    color: var(--nav-mobile-background-color);
     padding: 10px 20px;
     font-family: var(--nav-font);
     font-size: 17px;
@@ -389,13 +339,13 @@ h6 {
 }
 
 .navbar-brand span {
-  font-size: 24px;
+  font-size: 10px;
 }
 
 /* Untuk layar dengan lebar maksimum 768px */
 @media (max-width: 768px) {
   .navbar-brand img {
-    max-height: 45px;
+    max-height: 10px;
     margin-right: 8px;
   }
 

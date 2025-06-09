@@ -3,6 +3,7 @@
     ViewData["Title"] = "Home Page";
 }
 
+
 <style>
     body {
         margin: 0;
@@ -35,7 +36,7 @@
     .title-box {
         background: #161643;
         color: #fff;
-        padding: 10px 18px;
+        padding: 15px 18px;
         font-weight: 600;
         font-size: 1.05rem;
         display: flex;
@@ -147,8 +148,10 @@
 
 <div class="main-content">
     <div id="map"></div>
-    <div class="custom-table-container ">
-        <div class="title-box"><span>📋</span> Data Marker</div>
+    <div class="custom-table-container">
+        <div class="title-box">
+            <i class="bi bi-clipboard-fill me-2"></i> Data Marker
+        </div>
         <div class="table-responsive">
             <table class="custom-table" id="markerTable">
                 <thead>
@@ -158,8 +161,8 @@
                         <th>Point</th>
                         <th>Latitude</th>
                         <th>Longitude</th>
-                        <th>foto</th>
-                        <th>deskripsi</th>
+                        <th>Foto</th>
+                        <th>Deskripsi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -192,6 +195,7 @@
 </div>
 
 
+
 <!-- Script Google Map -->
 <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4jqcen5Xqrgck4V73aL6VepyKp2_wK1U&callback=initMap"></script>
@@ -209,7 +213,7 @@
 
         // map.addListener('click', function (e) {
         //     addMarker(e.latLng);
-        // });
+        //   });
     }
 
     // function addMarker(location) {
@@ -234,4 +238,7 @@
     }
 
     window.onload = initMap;
+
+
+
 </script>
