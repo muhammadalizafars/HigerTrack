@@ -35,7 +35,10 @@ namespace HigerTrack.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult Admin()
         {
-            return View();
+            var mapPoints = _context.MapPoints
+                .Include(mp => mp.CreatedUser)
+                .ToList();
+            return View(mapPoints);
         }
 
         [Authorize(Roles = "User")]

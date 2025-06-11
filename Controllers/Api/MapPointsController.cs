@@ -9,7 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using HigerTrack.Data;
 using HigerTrack.Models;
 using HigerTrack.Models.Dto;
-using Microsoft.AspNetCore.Authentication.JwtBearer; // Tambahkan ini
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Globalization;
 
 namespace HigerTrack.Controllers.Api
 {
@@ -37,6 +38,13 @@ namespace HigerTrack.Controllers.Api
             if (userId == null)
                 return Unauthorized("User tidak terautentikasi.");
 
+            // Tangani parsing latitude dan longitude
+            if (!double.TryParse(dto.Latitude.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var latitude) ||
+                !double.TryParse(dto.Longitude.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var longitude))
+            {
+                return BadRequest("Format Latitude atau Longitude tidak valid.");
+            }
+
             string? imageUrl = null;
             if (dto.Image != null && dto.Image.Length > 0)
             {
@@ -58,8 +66,8 @@ namespace HigerTrack.Controllers.Api
             {
                 Title = dto.Title,
                 Description = dto.Description,
-                Latitude = dto.Latitude,
-                Longitude = dto.Longitude,
+                Latitude = double.Parse(dto.Latitude, CultureInfo.InvariantCulture),
+                Longitude = double.Parse(dto.Longitude, CultureInfo.InvariantCulture),
                 ImageUrl = imageUrl,
                 CreatedBy = userId,
                 CreatedAt = DateTime.UtcNow

@@ -12,9 +12,8 @@
 
 <nav class="navmenu">
     <ul>
-        <li>
-            <a class="fw-bold text-white" asp-controller="Home" asp-action="Index">Home</a>
-        </li>
+
+
 
         @if (User.IsInRole("Admin"))
         {
@@ -27,6 +26,7 @@
 
         @if (User.IsInRole("User"))
         {
+            <a class="fw-bold text-white" asp-controller="Home" asp-action="Index">Home</a>
             <li class="nav-item">
                 <a class="fw-bold text-white" asp-controller="Home" asp-action="User">
                     <i class="bi bi-person-fill me-1" style="font-size: 1.1rem;"></i> User
