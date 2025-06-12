@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HigerTrack.Models;
 using HigerTrack.Data;
+using System.Security.Claims;
+
 
 namespace HigerTrack.Controllers
 {
@@ -42,10 +44,21 @@ namespace HigerTrack.Controllers
         }
 
         [Authorize(Roles = "User")]
-        public new IActionResult User()
+        [ActionName("User")]
+        public IActionResult UserMapPoints()
         {
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var mapPoints = _context.MapPoints
+                .Where(mp => mp.CreatedBy == userId)
+                .Include(mp => mp.CreatedUser)
+                .ToList();
+
+            // Secara eksplisit arahkan ke view 'User.cshtml'
+            return View("User", mapPoints);
         }
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

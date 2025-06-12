@@ -38,7 +38,6 @@ namespace HigerTrack.Controllers.Api
             if (userId == null)
                 return Unauthorized("User tidak terautentikasi.");
 
-            // Tangani parsing latitude dan longitude
             if (!double.TryParse(dto.Latitude.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var latitude) ||
                 !double.TryParse(dto.Longitude.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var longitude))
             {
@@ -66,8 +65,8 @@ namespace HigerTrack.Controllers.Api
             {
                 Title = dto.Title,
                 Description = dto.Description,
-                Latitude = double.Parse(dto.Latitude, CultureInfo.InvariantCulture),
-                Longitude = double.Parse(dto.Longitude, CultureInfo.InvariantCulture),
+                Latitude = latitude,
+                Longitude = longitude,
                 ImageUrl = imageUrl,
                 CreatedBy = userId,
                 CreatedAt = DateTime.UtcNow
@@ -79,16 +78,32 @@ namespace HigerTrack.Controllers.Api
             return Ok(new { message = "Titik berhasil disimpan", id = mapPoint.Id });
         }
 
-        /// <summary>
         /// Mengambil semua titik peta.
-        /// </summary>
         [HttpGet]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // Tambahkan ini jika GET juga harus pakai JWT
+        [AllowAnonymous] // Anonim boleh akses
         public async Task<IActionResult> GetMapPoints()
         {
             var baseUrl = $"{Request.Scheme}://{Request.Host}";
 
-            var points = await _context.MapPoints
+            string? userId = null;
+            string? userRole = null;
+
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                userRole = User.FindFirstValue(ClaimTypes.Role);
+            }
+
+            // Ambil semua data jika: Admin atau Anonim (belum login)
+            var query = _context.MapPoints.AsQueryable();
+
+            if (userRole != "Admin" && userId != null)
+            {
+                // Jika bukan admin dan user login → filter hanya yang dibuat oleh user tsb
+                query = query.Where(p => p.CreatedBy == userId);
+            }
+
+            var points = await query
                 .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new
                 {
@@ -104,6 +119,79 @@ namespace HigerTrack.Controllers.Api
                 .ToListAsync();
 
             return Ok(points);
+        }
+
+
+        /// <summary>
+        /// Edit titik peta sesuai role.
+        /// </summary>
+        [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> EditMapPoint(int id, [FromForm] MapPointDto dto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userRole = User.FindFirstValue(ClaimTypes.Role);
+
+            var mapPoint = await _context.MapPoints.FindAsync(id);
+            if (mapPoint == null)
+                return NotFound("Titik tidak ditemukan.");
+
+            if (userRole != "Admin" && mapPoint.CreatedBy != userId)
+                return Forbid("Anda tidak memiliki izin untuk mengedit titik ini.");
+
+            if (!double.TryParse(dto.Latitude.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var latitude) ||
+                !double.TryParse(dto.Longitude.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var longitude))
+            {
+                return BadRequest("Format Latitude atau Longitude tidak valid.");
+            }
+
+            mapPoint.Title = dto.Title;
+            mapPoint.Description = dto.Description;
+            mapPoint.Latitude = latitude;
+            mapPoint.Longitude = longitude;
+
+            if (dto.Image != null && dto.Image.Length > 0)
+            {
+                var uploadsPath = Path.Combine(_env.WebRootPath, "uploads");
+                Directory.CreateDirectory(uploadsPath);
+
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(dto.Image.FileName)}";
+                var fullPath = Path.Combine(uploadsPath, fileName);
+
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    await dto.Image.CopyToAsync(stream);
+                }
+
+                mapPoint.ImageUrl = $"/uploads/{fileName}";
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Titik berhasil diperbarui" });
+        }
+
+        /// <summary>
+        /// Hapus titik peta sesuai role.
+        /// </summary>
+        [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> DeleteMapPoint(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userRole = User.FindFirstValue(ClaimTypes.Role);
+
+            var mapPoint = await _context.MapPoints.FindAsync(id);
+            if (mapPoint == null)
+                return NotFound("Titik tidak ditemukan.");
+
+            if (userRole != "Admin" && mapPoint.CreatedBy != userId)
+                return Forbid("Anda tidak memiliki izin untuk menghapus titik ini.");
+
+            _context.MapPoints.Remove(mapPoint);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Titik berhasil dihapus" });
         }
     }
 }
