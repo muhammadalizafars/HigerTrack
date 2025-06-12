@@ -79,8 +79,9 @@ namespace HigerTrack.Controllers.Api
         }
 
         /// Mengambil semua titik peta.
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
-        [AllowAnonymous] // Anonim boleh akses
+        // Anonim boleh akses
         public async Task<IActionResult> GetMapPoints()
         {
             var baseUrl = $"{Request.Scheme}://{Request.Host}";
@@ -91,7 +92,7 @@ namespace HigerTrack.Controllers.Api
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                userRole = User.FindFirstValue(ClaimTypes.Role);
+                userRole = User.Claims.FirstOrDefault(c => c.Type.Contains("role"))?.Value;
             }
 
             // Ambil semua data jika: Admin atau Anonim (belum login)
@@ -122,6 +123,7 @@ namespace HigerTrack.Controllers.Api
         }
 
 
+
         /// <summary>
         /// Edit titik peta sesuai role.
         /// </summary>
@@ -130,7 +132,8 @@ namespace HigerTrack.Controllers.Api
         public async Task<IActionResult> EditMapPoint(int id, [FromForm] MapPointDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userRole = User.FindFirstValue(ClaimTypes.Role);
+            var userRole = User.Claims.FirstOrDefault(c => c.Type.Contains("role"))?.Value;
+
 
             var mapPoint = await _context.MapPoints.FindAsync(id);
             if (mapPoint == null)
