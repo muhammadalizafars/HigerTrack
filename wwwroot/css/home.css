@@ -27,12 +27,18 @@ body {
   color: #fff;
   padding: 15px 18px;
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 18px; /* Ukuran font */
   display: flex;
   align-items: center;
   border-radius: 6px 6px 0 0;
   box-shadow: none;
   letter-spacing: 0.4px;
+  gap: 5px;
+}
+
+.title-box i {
+  font-size: 18px;
+  color: #fff;
 }
 
 .border {
@@ -257,5 +263,10 @@ body {
   .pagination .page-link {
     font-size: 0.8rem;
     padding: 4px 8px;
+  }
+
+  .search-add-actions input,
+  .search-add-actions button {
+    width: 100%; /* Tombol dan input full di HP */
   }
 }
