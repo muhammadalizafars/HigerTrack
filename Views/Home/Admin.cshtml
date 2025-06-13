@@ -35,17 +35,21 @@
                     </label>
                 </div>
 
-                <div class="search-add-actions d-flex gap-2">
-                    <input type="text" id="searchInput" class="form-control form-control-sm"
-                        placeholder="Cari berdasarkan ID atau Judul..." style="width: 200px;">
+                <div class="search-add-actions d-flex gap-2 flex-wrap">
+                    <div class="search-box d-flex gap-2">
+                        <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Cari..."
+                            style="width: 200px;">
+                        <button class="btn btn-primary btn-sm" id="btnSearch">
+                            <i class="bi bi-search me-1"></i> Cari
+                        </button>
+                    </div>
 
-                    <button class="btn btn-primary btn-sm" id="btnSearch">
-                        <i class="bi bi-search me-1"></i> Cari
-                    </button>
-
-                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addModal">
-                        <i class="bi bi-plus-circle me-1"></i> Tambah Marker
-                    </button>
+                    <!-- Tombol Tambah -->
+                    <div class="tambah-box">
+                        <button class="btn btn-success btn-sm w-100" id="btnTambahData">
+                            <i class="bi bi-plus-circle me-1"></i> Tambah Marker
+                        </button>
+                    </div>
                 </div>
 
                 <div class="table-responsive mt-3">
