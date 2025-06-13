@@ -160,7 +160,7 @@ body {
 }
 
 /* ======================== Responsive ======================== */
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .main-content {
     max-width: 100vw;
     padding: 10px 8px 0 8px;
@@ -203,7 +203,7 @@ body {
 
   .search-add-actions input,
   .search-add-actions button {
-    width: 100%;
+    width: 40%;
   }
 
   .show-entries {
@@ -240,7 +240,14 @@ body {
   }
 
   .custom-table {
-    min-width: 480px;
+    min-width: 560px; /* penting agar tabel scrollable */
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 0 0 8px 8px;
+    margin-bottom: 80px;
   }
 
   #map {
