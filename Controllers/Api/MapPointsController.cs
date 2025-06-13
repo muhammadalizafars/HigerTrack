@@ -11,11 +11,14 @@ using HigerTrack.Models;
 using HigerTrack.Models.Dto;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Globalization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace HigerTrack.Controllers.Api
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
+
     public class MapPointsController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -31,7 +34,8 @@ namespace HigerTrack.Controllers.Api
         /// Membuat titik peta baru. Hanya untuk user yang sudah login.
         /// </summary>
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
+
         public async Task<IActionResult> CreateMapPoint([FromForm] MapPointDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -78,11 +82,16 @@ namespace HigerTrack.Controllers.Api
             return Ok(new { message = "Titik berhasil disimpan", id = mapPoint.Id });
         }
 
+        /// <summary>
         /// Mengambil semua titik peta.
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        /// </summary>
         [HttpGet]
-        // Anonim boleh akses
-        public async Task<IActionResult> GetMapPoints()
+        [AllowAnonymous]
+        public async Task<IActionResult> GetMapPoints(
+    string? search = null,
+    int? id = null,
+    int page = 1,
+    int pageSize = 10)
         {
             var baseUrl = $"{Request.Scheme}://{Request.Host}";
 
@@ -95,17 +104,32 @@ namespace HigerTrack.Controllers.Api
                 userRole = User.Claims.FirstOrDefault(c => c.Type.Contains("role"))?.Value;
             }
 
-            // Ambil semua data jika: Admin atau Anonim (belum login)
             var query = _context.MapPoints.AsQueryable();
 
             if (userRole != "Admin" && userId != null)
             {
-                // Jika bukan admin dan user login → filter hanya yang dibuat oleh user tsb
                 query = query.Where(p => p.CreatedBy == userId);
             }
 
-            var points = await query
+            // 🔍 Filter by id if specified
+            if (id.HasValue)
+            {
+                query = query.Where(p => p.Id == id.Value);
+            }
+
+            // 🔍 Search by title (case-insensitive)
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(p => p.Title.ToLower().Contains(search.ToLower()));
+            }
+
+            var totalCount = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var items = await query
                 .OrderByDescending(p => p.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(p => new
                 {
                     p.Id,
@@ -115,25 +139,32 @@ namespace HigerTrack.Controllers.Api
                     p.Longitude,
                     ImageUrl = p.ImageUrl != null ? baseUrl + p.ImageUrl : null,
                     p.CreatedAt,
-                    p.CreatedBy
+                    p.CreatedBy,
+                    CreatedUserName = p.CreatedUser.FullName
                 })
+
                 .ToListAsync();
 
-            return Ok(points);
+            return Ok(new
+            {
+                currentPage = page,
+                pageSize,
+                totalPages,
+                totalItems = totalCount,
+                data = items
+            });
         }
-
-
 
         /// <summary>
         /// Edit titik peta sesuai role.
         /// </summary>
         [HttpPut("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
+
         public async Task<IActionResult> EditMapPoint(int id, [FromForm] MapPointDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userRole = User.Claims.FirstOrDefault(c => c.Type.Contains("role"))?.Value;
-
 
             var mapPoint = await _context.MapPoints.FindAsync(id);
             if (mapPoint == null)
@@ -178,7 +209,8 @@ namespace HigerTrack.Controllers.Api
         /// Hapus titik peta sesuai role.
         /// </summary>
         [HttpDelete("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
+
         public async Task<IActionResult> DeleteMapPoint(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

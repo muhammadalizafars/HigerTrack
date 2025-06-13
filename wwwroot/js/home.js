@@ -8,20 +8,8 @@ function initMap() {
     center: center,
   });
 
-  // map.addListener('click', function (e) {
-  //     addMarker(e.latLng);
-  // });
 }
-
-// function addMarker(location) {
-//     const marker = new google.maps.Marker({
-//         position: location,
-//         map: map
-//     });
-//     markers.push(marker);
-//     updateTable();
-// }
-
+ 
 function updateTable() {
   const tbody = document.querySelector("#markerTable tbody");
 

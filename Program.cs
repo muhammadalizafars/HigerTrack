@@ -116,12 +116,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-// ✅ Aktifkan Swagger di semua environment (opsional: bisa dibatasi di development saja)
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "HigerTrack API v1");
-    c.RoutePrefix = "swagger"; // Akses di /swagger
+    c.RoutePrefix = "swagger";
 });
 
 app.UseHttpsRedirection();
