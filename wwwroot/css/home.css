@@ -116,7 +116,9 @@ body {
   text-align: center;
   padding: 12px 8px;
   border: 1px solid #ddd;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
   color: #000 !important;
 }
 
@@ -124,8 +126,10 @@ body {
   padding: 12px 8px;
   border: 1px solid #eee;
   vertical-align: middle;
-  white-space: nowrap;
   text-align: center;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .custom-table tbody tr:hover {
@@ -137,11 +141,14 @@ body {
   display: flex;
   justify-content: center;
   margin-top: 16px;
+  width: 100%;
 }
 
 .pagination {
   margin: 0;
   flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
 }
 
 .pagination .page-item .page-link {
@@ -183,64 +190,6 @@ body {
 }
 
 /* ======================== Responsive ======================== */
-@media (max-width: 768px) {
-  .main-content {
-    max-width: 100vw;
-    padding: 10px 8px 0 8px;
-    margin-bottom: 100px;
-  }
-
-  #map {
-    height: 500px;
-    border-radius: 10px;
-    margin-top: 90px;
-  }
-
-  .title-box {
-    font-size: 0.95rem;
-    padding: 10px 12px;
-    border-radius: 8px 8px 0 0;
-  }
-
-  .table-responsive {
-    border-radius: 0 0 8px 8px;
-    overflow-x: auto;
-    margin-bottom: 80px;
-  }
-
-  .custom-table {
-    min-width: 560px;
-  }
-
-  .search-add-container {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-add-actions {
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
-  }
-
-  .search-add-actions input,
-  .search-add-actions button {
-    width: 40%;
-  }
-
-  .show-entries {
-    width: 100%;
-    text-align: left;
-    margin-bottom: 10px;
-  }
-
-  .pagination .page-link {
-    padding: 4px 8px;
-    font-size: 0.7rem;
-    margin: 2px 1px 8px;
-  }
-}
-
 @media (max-width: 480px) {
   .main-content {
     padding: 6px 6px 0 6px;
@@ -266,15 +215,26 @@ body {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     border-radius: 0 0 8px 8px;
-    margin-bottom: 80px;
+    margin-bottom: 16px;
   }
 
   #map {
     height: 400px;
   }
 
+  .pagination-container {
+    justify-content: center !important;
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .pagination {
+    justify-content: center;
+    width: 100%;
+  }
+
   .pagination .page-item {
-    margin-bottom: 3px;
+    margin-bottom: 0px;
   }
 
   .pagination .page-link {
