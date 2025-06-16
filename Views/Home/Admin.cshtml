@@ -329,7 +329,6 @@
         } catch (err) {
             alert("Terjadi kesalahan jaringan.");
         }
-
         return false;
     }
 
@@ -350,5 +349,60 @@
             const err = await response.text();
             alert("Gagal menghapus marker: " + err);
         }
+    }
+
+
+
+
+
+    function renderPagination(current, total) {
+        let html = `<nav aria-label="Page navigation">`;
+        html += `<ul class="pagination justify-content-center">`;
+
+        // Tombol Previous
+        if (current > 1) {
+            html += `<li class="page-item">
+                    <button class="page-link" onclick="goToPage(${current - 1})">Previous</button>
+                 </li>`;
+        } else {
+            html += `<li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                 </li>`;
+        }
+
+        // Nomor halaman
+        for (let i = 1; i <= total; i++) {
+            if (i === current) {
+                html += `<li class="page-item active" aria-current="page">
+                        <span class="page-link">${i}</span>
+                     </li>`;
+            } else {
+                html += `<li class="page-item">
+                        <button class="page-link" onclick="goToPage(${i})">${i}</button>
+                     </li>`;
+            }
+        }
+
+        // Tombol Next
+        if (current < total) {
+            html += `<li class="page-item">
+                    <button class="page-link" onclick="goToPage(${current + 1})">Next</button>
+                 </li>`;
+        } else {
+            html += `<li class="page-item disabled">
+                    <span class="page-link">Next</span>
+                 </li>`;
+        }
+
+        html += `</ul></nav>`;
+
+        const container = document.querySelector(".pagination-container");
+        if (container) container.innerHTML = html;
+    }
+
+
+    function goToPage(page) {
+        currentPage = page;
+        loadMarkers();
     }
 </script>

@@ -27,7 +27,7 @@ body {
   color: #fff;
   padding: 15px 18px;
   font-weight: 600;
-  font-size: 18px; /* Ukuran font */
+  font-size: 18px;
   display: flex;
   align-items: center;
   border-radius: 6px 6px 0 0;
@@ -141,28 +141,45 @@ body {
 
 .pagination {
   margin: 0;
+  flex-wrap: wrap;
 }
 
 .pagination .page-item .page-link {
+  cursor: pointer;
   color: #161643;
-  font-size: 0.9rem;
-  padding: 6px 12px;
-  margin: 0 2px;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  margin: 3px 5px 10px;
   border-radius: 4px;
   border: 1px solid #ddd;
-  transition: background-color 0.2s, color 0.2s;
+  min-width: 30px;
+  text-align: center;
+  transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+.pagination .page-item:not(.disabled) .page-link:hover {
+  background-color: #e0e0e0;
+  color: #0d6efd;
+  transform: scale(1.05);
 }
 
 .pagination .page-item.active .page-link {
-  background-color: #161643;
-  color: #fff;
-  border-color: #161643;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+  transform: none;
+}
+
+.pagination .page-item.active .page-link:hover {
+  background-color: #0b5ed7;
+  border-color: #0b5ed7;
 }
 
 .pagination .page-item.disabled .page-link {
-  color: #999;
-  pointer-events: none;
-  background-color: #f9f9f9;
+  cursor: not-allowed;
+  color: #2e2e2e;
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
 }
 
 /* ======================== Responsive ======================== */
@@ -174,8 +191,7 @@ body {
   }
 
   #map {
-    height: 220px;
-    min-height: 500px;
+    height: 500px;
     border-radius: 10px;
     margin-top: 90px;
   }
@@ -218,13 +234,10 @@ body {
     margin-bottom: 10px;
   }
 
-  .pagination-container {
-    justify-content: center;
-  }
-
   .pagination .page-link {
-    padding: 5px 10px;
-    font-size: 0.85rem;
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    margin: 2px 1px 8px;
   }
 }
 
@@ -246,7 +259,7 @@ body {
   }
 
   .custom-table {
-    min-width: 560px; /* penting agar tabel scrollable */
+    min-width: 560px;
   }
 
   .table-responsive {
@@ -260,13 +273,18 @@ body {
     height: 400px;
   }
 
+  .pagination .page-item {
+    margin-bottom: 3px;
+  }
+
   .pagination .page-link {
-    font-size: 0.8rem;
-    padding: 4px 8px;
+    font-size: 0.65rem;
+    padding: 3px 6px;
+    margin: 2px 1px 6px;
   }
 
   .search-add-actions input,
   .search-add-actions button {
-    width: 100%; /* Tombol dan input full di HP */
+    width: 100%;
   }
 }
