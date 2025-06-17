@@ -46,10 +46,11 @@
 
                     <!-- Tombol Tambah -->
                     <div class="tambah-box">
-                        <button class="btn btn-success btn-sm w-100" id="btnTambahData">
+                        <button class="btn btn-success btn-sm w-100" data-bs-toggle="modal" data-bs-target="#addModal">
                             <i class="bi bi-plus-circle me-1"></i> Tambah Marker
                         </button>
                     </div>
+
                 </div>
 
                 <div class="table-responsive mt-3">
@@ -148,7 +149,7 @@
 
     async function loadMarkers() {
         const searchInput = document.getElementById("searchInput").value.trim();
-        const url = new URL("/api/MapPoints", window.location.origin);
+        const url = new URL("/api/WebMapPoints", window.location.origin);
 
         if (searchInput !== "") {
             if (!isNaN(searchInput)) {
@@ -239,25 +240,6 @@
         });
     }
 
-    function renderPagination(current, total) {
-        let html = `<div class="d-flex justify-content-between align-items-center mt-3">`;
-        html += `<div>Halaman ${current} dari ${total}</div>`;
-        html += `<div class="btn-group">`;
-
-        if (current > 1) {
-            html += `<button class="btn btn-sm btn-outline-primary" onclick="goToPage(${current - 1})">← Prev</button>`;
-        }
-
-        if (current < total) {
-            html += `<button class="btn btn-sm btn-outline-primary" onclick="goToPage(${current + 1})">Next →</button>`;
-        }
-
-        html += `</div></div>`;
-
-        const container = document.querySelector(".pagination-container");
-        if (container) container.innerHTML = html;
-    }
-
     function goToPage(page) {
         currentPage = page;
         loadMarkers();
@@ -275,7 +257,7 @@
         const image = document.getElementById("add-image").files[0];
         if (image) formData.append("Image", image);
 
-        const response = await fetch("/api/MapPoints", {
+        const response = await fetch("/api/WebMapPoints", {
             method: "POST",
             body: formData,
             credentials: "include"
@@ -303,7 +285,7 @@
         if (image) formData.append("Image", image);
 
         try {
-            const response = await fetch(`/api/MapPoints/${id}`, {
+            const response = await fetch(`/api/WebMapPoints/${id}`, {
                 method: "PUT",
                 body: formData,
                 credentials: "include"
@@ -337,7 +319,7 @@
     async function deleteMarker(id) {
         if (!confirm("Yakin ingin menghapus marker ini?")) return;
 
-        const response = await fetch(`/api/MapPoints/${id}`, {
+        const response = await fetch(`/api/WebMapPoints/${id}`, {
             method: "DELETE",
             credentials: "include"
         });

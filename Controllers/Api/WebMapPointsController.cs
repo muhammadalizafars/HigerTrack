@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using HigerTrack.Data;
 using HigerTrack.Models;
 using HigerTrack.Models.Dto;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Globalization;
 
 namespace HigerTrack.Controllers.Api
@@ -14,12 +13,12 @@ namespace HigerTrack.Controllers.Api
     [Route("api/[controller]")]
     [Authorize]
 
-    public class MapPointsController : ControllerBase
+    public class WebMapPointsController : ControllerBase
     {
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _env;
 
-        public MapPointsController(AppDbContext context, IWebHostEnvironment env)
+        public WebMapPointsController(AppDbContext context, IWebHostEnvironment env)
         {
             _context = context;
             _env = env;
@@ -29,7 +28,7 @@ namespace HigerTrack.Controllers.Api
         /// Membuat titik peta baru. Hanya untuk user yang sudah login.
         /// </summary>
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
 
         public async Task<IActionResult> CreateMapPoint([FromForm] MapPointDto dto)
         {
@@ -154,7 +153,7 @@ namespace HigerTrack.Controllers.Api
         /// Edit titik peta sesuai role.
         /// </summary>
         [HttpPut("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
 
         public async Task<IActionResult> EditMapPoint(int id, [FromForm] MapPointDto dto)
         {
@@ -204,7 +203,7 @@ namespace HigerTrack.Controllers.Api
         /// Hapus titik peta sesuai role.
         /// </summary>
         [HttpDelete("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
 
         public async Task<IActionResult> DeleteMapPoint(int id)
         {
