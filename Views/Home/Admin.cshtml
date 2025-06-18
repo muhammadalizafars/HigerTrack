@@ -175,6 +175,9 @@
         tbody.innerHTML = "";
         modalsContainer.innerHTML = "";
 
+        markers.forEach(m => m.setMap(null));
+        markers = [];
+
         data.forEach((item, index) => {
             const no = (currentPage - 1) * pageSize + index + 1;
             const imageTag = item.imageUrl ? `<img src="${item.imageUrl}" style="max-width:60px;max-height:60px;" />` : "";
@@ -237,6 +240,38 @@
 
             tbody.insertAdjacentHTML("beforeend", row);
             modalsContainer.insertAdjacentHTML("beforeend", modal);
+
+            // MARKER KE GOOGLE MAP
+            if (item.latitude && item.longitude) {
+                const position = {
+                    lat: parseFloat(item.latitude),
+                    lng: parseFloat(item.longitude)
+                };
+
+                const marker = new google.maps.Marker({
+                    position: position,
+                    map: map,
+                    title: item.title,
+                    icon: {
+                        url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                        scaledSize: new google.maps.Size(32, 32)
+                    }
+                });
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `<div style="min-width:150px;">
+                            <strong>${item.title}</strong><br/>
+                            <span>${item.description}</span><br/>
+                            <small><i>${item.latitude}, ${item.longitude}</i></small>
+                          </div>`
+                });
+
+                marker.addListener("click", () => {
+                    infoWindow.open(map, marker);
+                });
+
+                markers.push(marker);
+            }
         });
     }
 
