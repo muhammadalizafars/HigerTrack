@@ -7,7 +7,6 @@ using HigerTrack.Models;
 using HigerTrack.Models.Dto;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Globalization;
-
 namespace HigerTrack.Controllers.Api
 {
     [ApiController]
@@ -30,7 +29,6 @@ namespace HigerTrack.Controllers.Api
         /// </summary>
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-
         public async Task<IActionResult> CreateMapPoint([FromForm] MapPointDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -66,6 +64,11 @@ namespace HigerTrack.Controllers.Api
                 Description = dto.Description,
                 Latitude = latitude,
                 Longitude = longitude,
+                Group = dto.Group,
+                PipeType = dto.PipeType,
+                PipeDiameterInch = dto.PipeDiameterInch,
+                PipeThickness = dto.PipeThickness,
+                Vehicle = dto.Vehicle,
                 ImageUrl = imageUrl,
                 CreatedBy = userId,
                 CreatedAt = DateTime.UtcNow
@@ -77,16 +80,14 @@ namespace HigerTrack.Controllers.Api
             return Ok(new { message = "Titik berhasil disimpan", id = mapPoint.Id });
         }
 
-        /// <summary>
-        /// Mengambil semua titik peta.
-        /// </summary>
+
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetMapPoints(
-    string? search = null,
-    int? id = null,
-    int page = 1,
-    int pageSize = 10)
+            string? search = null,
+            int? id = null,
+            int page = 1,
+            int pageSize = 10)
         {
             var baseUrl = $"{Request.Scheme}://{Request.Host}";
 
@@ -132,11 +133,18 @@ namespace HigerTrack.Controllers.Api
                     p.Description,
                     p.Latitude,
                     p.Longitude,
+                    p.Group,
+                    p.PipeType,
+                    p.PipeDiameterInch,
+                    p.PipeThickness,
+                    p.Vehicle,
                     ImageUrl = p.ImageUrl != null ? baseUrl + p.ImageUrl : null,
                     p.CreatedAt,
+                    p.UpdatedAt,
                     p.CreatedBy,
                     CreatedUserName = p.CreatedUser.FullName
                 })
+
 
                 .ToListAsync();
 
@@ -149,13 +157,8 @@ namespace HigerTrack.Controllers.Api
                 data = items
             });
         }
-
-        /// <summary>
-        /// Edit titik peta sesuai role.
-        /// </summary>
         [HttpPut("{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-
         public async Task<IActionResult> EditMapPoint(int id, [FromForm] MapPointDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -168,8 +171,8 @@ namespace HigerTrack.Controllers.Api
             if (userRole != "Admin" && mapPoint.CreatedBy != userId)
                 return Forbid("Anda tidak memiliki izin untuk mengedit titik ini.");
 
-            if (!double.TryParse(dto.Latitude.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var latitude) ||
-                !double.TryParse(dto.Longitude.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var longitude))
+            if (!double.TryParse(dto.Latitude.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out var latitude) ||
+                !double.TryParse(dto.Longitude.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out var longitude))
             {
                 return BadRequest("Format Latitude atau Longitude tidak valid.");
             }
@@ -178,6 +181,11 @@ namespace HigerTrack.Controllers.Api
             mapPoint.Description = dto.Description;
             mapPoint.Latitude = latitude;
             mapPoint.Longitude = longitude;
+            mapPoint.Group = dto.Group;
+            mapPoint.PipeType = dto.PipeType;
+            mapPoint.PipeDiameterInch = dto.PipeDiameterInch;
+            mapPoint.PipeThickness = dto.PipeThickness;
+            mapPoint.Vehicle = dto.Vehicle;
 
             if (dto.Image != null && dto.Image.Length > 0)
             {
@@ -195,14 +203,14 @@ namespace HigerTrack.Controllers.Api
                 mapPoint.ImageUrl = $"/uploads/{fileName}";
             }
 
+            mapPoint.UpdatedAt = DateTime.UtcNow;
+
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Titik berhasil diperbarui" });
         }
 
-        /// <summary>
-        /// Hapus titik peta sesuai role.
-        /// </summary>
+
         [HttpDelete("{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 

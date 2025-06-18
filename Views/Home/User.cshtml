@@ -15,7 +15,7 @@
     <div id="map"></div>
 
     <div class="title-box">
-        <i class="bi bi-person-fill me-2"></i> Data Marker User
+        <i class="bi bi-shield-lock-fill me-1"></i> Data Marker User
     </div>
 
     <div class="border">
@@ -44,12 +44,14 @@
                         </button>
                     </div>
 
+
                     <!-- Tombol Tambah -->
                     <div class="tambah-box">
-                        <button class="btn btn-success btn-sm w-100" id="btnTambahData">
+                        <button class="btn btn-success btn-sm w-100" data-bs-toggle="modal" data-bs-target="#addModal">
                             <i class="bi bi-plus-circle me-1"></i> Tambah Marker
                         </button>
                     </div>
+
                 </div>
 
                 <div class="table-responsive mt-3">
@@ -59,10 +61,15 @@
                                 <th>No</th>
                                 <th>Username</th>
                                 <th>Point</th>
-                                <th>Latitude</th>
-                                <th>Longitude</th>
+                                <th>Latitude, Longitude</th>
+                                <th>Group</th>
+                                <th>Jenis pipa</th>
+                                <th>Diameter pipa(inci)</th>
+                                <th>Tebal pipa</th>
+                                <th>Kendaraan</th>
                                 <th>Foto</th>
                                 <th>Deskripsi</th>
+                                <th>Updated at</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -77,7 +84,7 @@
 
 <!-- Modal Tambah -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-xl"> <!-- Membuat modal lebih lebar -->
         <div class="modal-content">
             <form onsubmit="submitAddForm(event)">
                 <div class="modal-header">
@@ -85,27 +92,55 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Judul</label>
-                        <input type="text" class="form-control" id="add-title" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Deskripsi</label>
-                        <textarea class="form-control" id="add-desc" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Latitude</label>
-                        <input type="text" class="form-control" id="add-lat" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Longitude</label>
-                        <input type="text" class="form-control" id="add-lng" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Gambar</label>
-                        <input type="file" class="form-control" id="add-image" accept="image/*" />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Judul Titik</label>
+                                <input type="text" class="form-control" id="add-title" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Latitude</label>
+                                <input type="text" class="form-control" id="add-lat" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Longitude</label>
+                                <input type="text" class="form-control" id="add-lng" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Group</label>
+                                <input type="text" class="form-control" id="add-group" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Jenis Pipa</label>
+                                <input type="text" class="form-control" id="add-pipe-type" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Diameter Pipa (inci)</label>
+                                <input type="number" step="0.01" class="form-control" id="add-pipe-diameter" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Tebal Pipa</label>
+                                <input type="number" step="0.01" class="form-control" id="add-pipe-thickness" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Kendaraan</label>
+                                <input type="text" class="form-control" id="add-vehicle" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Deskripsi</label>
+                                <textarea class="form-control" id="add-desc" rows="4" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Foto</label>
+                                <input type="file" class="form-control" id="add-image" accept="image/*" />
+                            </div>
+                        </div>
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success">Simpan</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -114,6 +149,7 @@
         </div>
     </div>
 </div>
+
 
 <div id="modalsContainer"></div>
 
@@ -148,7 +184,7 @@
 
     async function loadMarkers() {
         const searchInput = document.getElementById("searchInput").value.trim();
-        const url = new URL("/api/MapPoints", window.location.origin);
+        const url = new URL("/api/WebMapPoints", window.location.origin);
 
         if (searchInput !== "") {
             if (!isNaN(searchInput)) {
@@ -174,89 +210,145 @@
         tbody.innerHTML = "";
         modalsContainer.innerHTML = "";
 
+        // Hapus semua marker lama dari map
+        markers.forEach(m => m.setMap(null));
+        markers = [];
+
         data.forEach((item, index) => {
             const no = (currentPage - 1) * pageSize + index + 1;
             const imageTag = item.imageUrl ? `<img src="${item.imageUrl}" style="max-width:60px;max-height:60px;" />` : "";
             const modalId = `editModal-${item.id}`;
 
+            // TABEL
             const row = `
-                <tr>
-                    <td>${no}</td>
-                    <td>${item.createdUserName ?? "-"}</td>
-                    <td>${item.title}</td>
-                    <td>${item.latitude}</td>
-                    <td>${item.longitude}</td>
-                    <td>${imageTag}</td>
-                    <td>${item.description}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#${modalId}">Edit</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteMarker(${item.id})">Hapus</button>
-                    </td>
-                </tr>`;
+            <tr>
+                <td>${no}</td>
+                <td>${item.createdUserName ?? "-"}</td>
+                <td>${item.title ?? "-"}</td>
+                <td>${item.latitude}, ${item.longitude}</td>
+                <td>${item.group ?? "-"}</td>
+                <td>${item.pipeType ?? "-"}</td>
+                <td>${item.pipeDiameterInch ?? "-"}</td>
+                <td>${item.pipeThickness ?? "-"}</td>
+                <td>${item.vehicle ?? "-"}</td>
+                <td>${imageTag}</td>
+                <td>${item.description ?? "-"}</td>
+                <td>${item.updatedAt ? new Date(item.updatedAt).toLocaleString() : "-"}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#${modalId}">Edit</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteMarker(${item.id})">Hapus</button>
+                </td>
+            </tr>`;
 
+
+            // MODAL
             const modal = `
-                <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <form onsubmit="submitEditForm(event, ${item.id})">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Edit Marker</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <form onsubmit="submitEditForm(event, ${item.id})">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Marker</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <!-- Kolom kiri -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Judul</label>
+                                            <input type="text" class="form-control" id="edit-title-${item.id}" value="${item.title ?? ''}" required />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Latitude</label>
+                                            <input type="text" class="form-control" id="edit-lat-${item.id}" value="${item.latitude}" required />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Longitude</label>
+                                            <input type="text" class="form-control" id="edit-lng-${item.id}" value="${item.longitude}" required />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Group</label>
+                                            <input type="text" class="form-control" id="edit-group-${item.id}" value="${item.group ?? ''}" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Jenis Pipa</label>
+                                            <input type="text" class="form-control" id="edit-pipe-type-${item.id}" value="${item.pipeType ?? ''}" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Diameter Pipa (inci)</label>
+                                            <input type="number" step="0.01" class="form-control" id="edit-pipe-diameter-${item.id}" value="${item.pipeDiameterInch ?? ''}" />
+                                        </div>
+                                    </div>
+
+                                    <!-- Kolom kanan -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Tebal Pipa</label>
+                                            <input type="number" step="0.01" class="form-control" id="edit-pipe-thickness-${item.id}" value="${item.pipeThickness ?? ''}" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Kendaraan</label>
+                                            <input type="text" class="form-control" id="edit-vehicle-${item.id}" value="${item.vehicle ?? ''}" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Deskripsi</label>
+                                            <textarea class="form-control" id="edit-desc-${item.id}" required>${item.description ?? ''}</textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Gambar (opsional)</label>
+                                            <input type="file" class="form-control" id="edit-image-${item.id}" accept="image/*" />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label class="form-label">Judul</label>
-                                        <input type="text" class="form-control" id="edit-title-${item.id}" value="${item.title}" required />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Deskripsi</label>
-                                        <textarea class="form-control" id="edit-desc-${item.id}" required>${item.description}</textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Latitude</label>
-                                        <input type="text" class="form-control" id="edit-lat-${item.id}" value="${item.latitude}" required />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Longitude</label>
-                                        <input type="text" class="form-control" id="edit-lng-${item.id}" value="${item.longitude}" required />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Gambar (opsional)</label>
-                                        <input type="file" class="form-control" id="edit-image-${item.id}" accept="image/*" />
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-success">Simpan</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                </div>
-                            </form>
-                        </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success">Simpan</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            </div>
+                        </form>
                     </div>
-                </div>`;
+                </div>
+            </div>`;
+
 
             tbody.insertAdjacentHTML("beforeend", row);
             modalsContainer.insertAdjacentHTML("beforeend", modal);
+
+            // MARKER KE GOOGLE MAP
+            if (item.latitude && item.longitude) {
+                const position = {
+                    lat: parseFloat(item.latitude),
+                    lng: parseFloat(item.longitude)
+                };
+
+                const marker = new google.maps.Marker({
+                    position: position,
+                    map: map,
+                    title: item.title,
+                    icon: {
+                        url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                        scaledSize: new google.maps.Size(32, 32)
+                    }
+                });
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `<div style="min-width:150px;">
+                            <strong>${item.title}</strong><br/>
+                            <span>${item.description}</span><br/>
+                            <small><i>${item.latitude}, ${item.longitude}</i></small>
+                          </div>`
+                });
+
+                marker.addListener("click", () => {
+                    infoWindow.open(map, marker);
+                });
+
+                markers.push(marker);
+            }
         });
     }
 
-    function renderPagination(current, total) {
-        let html = `<div class="d-flex justify-content-between align-items-center mt-3">`;
-        html += `<div>Halaman ${current} dari ${total}</div>`;
-        html += `<div class="btn-group">`;
-
-        if (current > 1) {
-            html += `<button class="btn btn-sm btn-outline-primary" onclick="goToPage(${current - 1})">← Prev</button>`;
-        }
-
-        if (current < total) {
-            html += `<button class="btn btn-sm btn-outline-primary" onclick="goToPage(${current + 1})">Next →</button>`;
-        }
-
-        html += `</div></div>`;
-
-        const container = document.querySelector(".pagination-container");
-        if (container) container.innerHTML = html;
-    }
 
     function goToPage(page) {
         currentPage = page;
@@ -271,11 +363,16 @@
         formData.append("Description", document.getElementById("add-desc").value);
         formData.append("Latitude", document.getElementById("add-lat").value);
         formData.append("Longitude", document.getElementById("add-lng").value);
+        formData.append("Group", document.getElementById("add-group").value);
+        formData.append("PipeType", document.getElementById("add-pipe-type").value);
+        formData.append("PipeDiameterInch", document.getElementById("add-pipe-diameter").value);
+        formData.append("PipeThickness", document.getElementById("add-pipe-thickness").value);
+        formData.append("Vehicle", document.getElementById("add-vehicle").value);
 
         const image = document.getElementById("add-image").files[0];
         if (image) formData.append("Image", image);
 
-        const response = await fetch("/api/MapPoints", {
+        const response = await fetch("/api/WebMapPoints", {
             method: "POST",
             body: formData,
             credentials: "include"
@@ -303,7 +400,7 @@
         if (image) formData.append("Image", image);
 
         try {
-            const response = await fetch(`/api/MapPoints/${id}`, {
+            const response = await fetch(`/api/WebMapPoints/${id}`, {
                 method: "PUT",
                 body: formData,
                 credentials: "include"
@@ -329,7 +426,6 @@
         } catch (err) {
             alert("Terjadi kesalahan jaringan.");
         }
-
         return false;
     }
 
@@ -338,7 +434,7 @@
     async function deleteMarker(id) {
         if (!confirm("Yakin ingin menghapus marker ini?")) return;
 
-        const response = await fetch(`/api/MapPoints/${id}`, {
+        const response = await fetch(`/api/WebMapPoints/${id}`, {
             method: "DELETE",
             credentials: "include"
         });
@@ -351,6 +447,10 @@
             alert("Gagal menghapus marker: " + err);
         }
     }
+
+
+
+
 
     function renderPagination(current, total) {
         let html = `<nav aria-label="Page navigation">`;
