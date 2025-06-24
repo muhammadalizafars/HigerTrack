@@ -128,22 +128,28 @@ function renderMarkers(data) {
             lng: parseFloat(item.longitude)
         };
 
-        const marker = new google.maps.Marker({
+        const { AdvancedMarkerElement } = google.maps.marker;
+
+        const markerIcon = document.createElement("img");
+        markerIcon.src = "/img/marker.png";
+        markerIcon.style.width = "32px";
+        markerIcon.style.height = "32px";
+
+        const marker = new AdvancedMarkerElement({
             position,
             map,
             title: item.title,
-            icon: {
-                url: "/img/marker.png",
-                scaledSize: new google.maps.Size(32, 32)
-            }
+            content: markerIcon
         });
+
 
         const infoWindow = new google.maps.InfoWindow({
             content: `<div style="min-width:200px;">
                 ${item.imageUrl ? `<img src="${item.imageUrl}" style="width:100%;max-height:150px;object-fit:cover;border-radius:8px;margin-bottom:5px;" />` : ""}
                 <strong>${item.title}</strong><br/>
                 ${item.description}<br/>
-                <small>${item.latitude}, ${item.longitude}</small>
+                <small>${item.latitude}, ${item.longitude}</small>,<br/>
+                <small>${item.createdAt}</small>
             </div>`
         });
 
@@ -160,9 +166,9 @@ function renderMarkers(data) {
             const index = parseInt(this.dataset.index);
             const marker = markers[index];
             if (marker) {
-                map.panTo(marker.getPosition());
+                map.panTo(marker.position);
                 map.setZoom(14);
-                google.maps.event.trigger(marker, "click");
+                marker.dispatchEvent(new Event("click"));
             }
         });
     });
@@ -221,6 +227,7 @@ async function submitAddForm(e) {
 
 async function submitEditForm(e, id) {
     e.preventDefault();
+
     const formData = new FormData();
     formData.append("Title", document.getElementById(`edit-title-${id}`).value);
     formData.append("Description", document.getElementById(`edit-desc-${id}`).value);
@@ -237,13 +244,31 @@ async function submitEditForm(e, id) {
 
     if (response.ok) {
         alert("Marker berhasil diperbarui.");
-        bootstrap.Modal.getInstance(document.getElementById(`editModal-${id}`)).hide();
-        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-        loadMarkers();
+
+        // Tutup modal dengan aman
+        const modalElement = document.getElementById(`editModal-${id}`);
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        if (modalInstance) modalInstance.hide();
+
+        // Tunggu sejenak agar modal benar-benar hilang
+        setTimeout(() => {
+            // Hapus backdrop
+            document.querySelectorAll(".modal-backdrop").forEach(el => el.remove());
+
+            // Bersihkan class dan style body/html
+            document.body.classList.remove("modal-open");
+            document.documentElement.style.overflow = "auto";
+            document.body.style.overflow = "auto";
+            document.body.style.paddingRight = "0"; // kadang bootstrap menambahkan padding saat modal tampil
+
+            // Load ulang data
+            loadMarkers();
+        }, 300); // waktu aman setelah animasi modal selesai
     } else {
         alert("Gagal memperbarui marker.");
     }
 }
+
 
 async function deleteMarker(id) {
     if (!confirm("Yakin ingin menghapus marker ini?")) return;

@@ -77,16 +77,15 @@ namespace HigerTrack.Controllers.Api
             return Ok(new { message = "Titik berhasil disimpan", id = mapPoint.Id });
         }
 
-        /// <summary>
-        /// Mengambil semua titik peta.
-        /// </summary>
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetMapPoints(
-    string? search = null,
-    int? id = null,
-    int page = 1,
-    int pageSize = 10)
+            string? search = null,
+            int? id = null,
+            int page = 1,
+            int pageSize = 10)
         {
             var baseUrl = $"{Request.Scheme}://{Request.Host}";
 
