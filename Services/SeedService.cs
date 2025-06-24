@@ -34,7 +34,7 @@ namespace HigerTrack.Services
                 {
                     adminUser = new Users
                     {
-                        FullName = "MUHAMMAD ALI ZAFAR SIDIQ",
+                        FullName = "Admin",
                         UserName = adminEmail,
                         NormalizedUserName = adminEmail.ToUpper(),
                         Email = adminEmail,

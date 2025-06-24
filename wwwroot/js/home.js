@@ -49,64 +49,80 @@
     }
 
     function renderMarkers(data) {
-        const tbody = document.querySelector("#markerTable tbody");
-        const modalsContainer = document.getElementById("modalsContainer");
-        tbody.innerHTML = "";
-        modalsContainer.innerHTML = "";
+    const tbody = document.querySelector("#markerTable tbody");
+    const modalsContainer = document.getElementById("modalsContainer");
+    tbody.innerHTML = "";
+    modalsContainer.innerHTML = "";
 
-        markers.forEach(m => m.setMap(null));
-        markers = [];
+    // Hapus marker lama dari map
+    markers.forEach(m => m.setMap(null));
+    markers = [];
 
-        data.forEach((item, index) => {
-            const no = (currentPage - 1) * pageSize + index + 1;
-            const imageTag = item.imageUrl ? `<img src="${item.imageUrl}" style="max-width:60px;max-height:60px;" />` : "";
-            const modalId = `editModal-${item.id}`;
+    data.forEach((item, index) => {
+        const no = (currentPage - 1) * pageSize + index + 1;
+        const imageTag = item.imageUrl
+            ? `<img src="${item.imageUrl}" class="img-thumbnail rounded shadow-sm" style="width:60px;height:60px;object-fit:cover;" />`
+            : "";
+        const modalId = `editModal-${item.id}`;
 
-            const row = `
-                <tr>
-                    <td>${no}</td>
-                    <td>${item.createdUserName ?? "-"}</td>
-                    <td>${item.title}</td>
-                    <td>${item.latitude} , ${item.longitude}</td>
-                    <td>${imageTag}</td>
-                    <td>${item.description}</td>
-                </tr>`;
+        // Baris tabel dengan judul yang bisa diklik
+        const row = `
+            <tr>
+                <td>${no}</td>
+                <td>${item.createdUserName ?? "-"}</td>
+                <td><a href="#" class="title-link" data-index="${index}">${item.title}</a></td>
+                <td>${item.latitude}, ${item.longitude}</td>
+                <td>${imageTag}</td>
+                <td>${item.description}</td>
+            </tr>`;
 
-            tbody.insertAdjacentHTML("beforeend", row);
+        tbody.insertAdjacentHTML("beforeend", row);
 
-            // MARKER KE GOOGLE MAP
-            if (item.latitude && item.longitude) {
-                const position = {
-                    lat: parseFloat(item.latitude),
-                    lng: parseFloat(item.longitude)
-                };
+        const position = {
+            lat: parseFloat(item.latitude),
+            lng: parseFloat(item.longitude)
+        };
 
-                const marker = new google.maps.Marker({
-                    position: position,
-                    map: map,
-                    title: item.title,
-                    icon: {
-                        url: "/img/marker.png",
-                        scaledSize: new google.maps.Size(32, 32)
-                    }
-                });
-
-                const infoWindow = new google.maps.InfoWindow({
-                    content: `<div style="min-width:150px;">
-                            <strong>${item.title}</strong><br/>
-                            <span>${item.description}</span><br/>
-                            <small><i>${item.latitude}, ${item.longitude}</i></small>
-                          </div>`
-                });
-
-                marker.addListener("click", () => {
-                    infoWindow.open(map, marker);
-                });
-
-                markers.push(marker);
+        const marker = new google.maps.Marker({
+            position,
+            map,
+            title: item.title,
+            icon: {
+                url: "/img/marker.png",   
+                scaledSize: new google.maps.Size(32, 32)
             }
         });
-    }
+
+        const infoWindow = new google.maps.InfoWindow({
+            content: `<div style="min-width:200px;">
+                ${item.imageUrl ? `<img src="${item.imageUrl}" style="width:100%;max-height:150px;object-fit:cover;border-radius:8px;margin-bottom:5px;" />` : ""}
+                <strong>${item.title}</strong><br/>
+                ${item.description}<br/>
+                <small>${item.latitude}, ${item.longitude}</small>,<br/>
+                <small>${item.createdAt}</small>
+            </div>`
+        });
+
+        marker.addListener("click", () => infoWindow.open(map, marker));
+
+        // Simpan marker dan InfoWindow dalam array marker
+        markers.push(marker);
+    });
+
+    // Tambahkan event listener ke semua judul setelah semua marker dibuat
+    document.querySelectorAll(".title-link").forEach(link => {
+        link.addEventListener("click", function (e) {
+            e.preventDefault();
+            const index = parseInt(this.dataset.index);
+            const marker = markers[index];
+            if (marker) {
+                map.panTo(marker.getPosition());
+                map.setZoom(14);
+                google.maps.event.trigger(marker, "click");
+            }
+        });
+    });
+}
 
     function renderPagination(current, total) {
         let html = `<nav aria-label="Page navigation">`;
