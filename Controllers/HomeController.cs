@@ -63,8 +63,8 @@ namespace HigerTrack.Controllers
             if (userId == null)
                 return Json(new { success = false, message = "User tidak terautentikasi." });
 
-            if (!double.TryParse(dto.Latitude.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var latitude) ||
-                !double.TryParse(dto.Longitude.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var longitude))
+            if (!double.TryParse(dto.Latitude?.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var latitude) ||
+                !double.TryParse(dto.Longitude?.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var longitude))
             {
                 return Json(new { success = false, message = "Format Latitude atau Longitude tidak valid." });
             }
@@ -118,8 +118,8 @@ namespace HigerTrack.Controllers
             if (userRole != "Admin" && mapPoint.CreatedBy != userId)
                 return Json(new { success = false, message = "Tidak punya izin mengedit titik ini." });
 
-            if (!double.TryParse(dto.Latitude.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var latitude) ||
-                !double.TryParse(dto.Longitude.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var longitude))
+            if (!double.TryParse(dto.Latitude?.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var latitude) ||
+                !double.TryParse(dto.Longitude?.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var longitude))
             {
                 return Json(new { success = false, message = "Format Latitude atau Longitude tidak valid." });
             }
@@ -200,8 +200,9 @@ namespace HigerTrack.Controllers
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(p => p.Title.ToLower().Contains(search.ToLower()));
+                query = query.Where(p => EF.Functions.Like(p.Title, $"%{search}%"));
             }
+
 
             var totalCount = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
@@ -220,8 +221,9 @@ namespace HigerTrack.Controllers
                     ImageUrl = p.ImageUrl != null ? baseUrl + p.ImageUrl : null,
                     p.CreatedAt,
                     p.CreatedBy,
-                    CreatedUserName = p.CreatedUser.FullName
+                    CreatedUserName = p.CreatedUser != null ? p.CreatedUser.FullName : "-"
                 })
+
                 .ToListAsync();
 
             return Json(new
