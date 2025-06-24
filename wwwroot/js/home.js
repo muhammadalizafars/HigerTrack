@@ -72,48 +72,7 @@
                     <td>${item.description}</td>
                 </tr>`;
 
-            const modal = `
-                <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <form onsubmit="submitEditForm(event, ${item.id})">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Edit Marker</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label class="form-label">Judul</label>
-                                        <input type="text" class="form-control" id="edit-title-${item.id}" value="${item.title}" required />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Deskripsi</label>
-                                        <textarea class="form-control" id="edit-desc-${item.id}" required>${item.description}</textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Latitude</label>
-                                        <input type="text" class="form-control" id="edit-lat-${item.id}" value="${item.latitude}" required />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Longitude</label>
-                                        <input type="text" class="form-control" id="edit-lng-${item.id}" value="${item.longitude}" required />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Gambar (opsional)</label>
-                                        <input type="file" class="form-control" id="edit-image-${item.id}" accept="image/*" />
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-success">Simpan</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>`;
-
             tbody.insertAdjacentHTML("beforeend", row);
-            modalsContainer.insertAdjacentHTML("beforeend", modal);
 
             // MARKER KE GOOGLE MAP
             if (item.latitude && item.longitude) {

@@ -128,20 +128,15 @@ function renderMarkers(data) {
             lng: parseFloat(item.longitude)
         };
 
-        const { AdvancedMarkerElement } = google.maps.marker;
-
-        const markerIcon = document.createElement("img");
-        markerIcon.src = "/img/marker.png";
-        markerIcon.style.width = "32px";
-        markerIcon.style.height = "32px";
-
-        const marker = new AdvancedMarkerElement({
+        const marker = new google.maps.Marker({
             position,
             map,
             title: item.title,
-            content: markerIcon
+            icon: {
+                url: "/img/marker.png",   
+                scaledSize: new google.maps.Size(32, 32)
+            }
         });
-
 
         const infoWindow = new google.maps.InfoWindow({
             content: `<div style="min-width:200px;">
@@ -166,9 +161,9 @@ function renderMarkers(data) {
             const index = parseInt(this.dataset.index);
             const marker = markers[index];
             if (marker) {
-                map.panTo(marker.position);
+                map.panTo(marker.getPosition());
                 map.setZoom(14);
-                marker.dispatchEvent(new Event("click"));
+                google.maps.event.trigger(marker, "click");
             }
         });
     });
