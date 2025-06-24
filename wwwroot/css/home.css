@@ -104,24 +104,15 @@ body {
   width: 100%;
 }
 
+/* ======= TABEL FIX WIDTH ======= */
 .custom-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
+  table-layout: fixed; /* Kunci lebar kolom */
 }
 
-.custom-table th {
-  background-color: #f2f5f8;
-  font-weight: 600;
-  text-align: center;
-  padding: 12px 8px;
-  border: 1px solid #ddd;
-  white-space: normal;
-  word-break: break-word;
-  overflow-wrap: break-word;
-  color: #000 !important;
-}
-
+.custom-table th,
 .custom-table td {
   padding: 12px 8px;
   border: 1px solid #eee;
@@ -130,10 +121,54 @@ body {
   white-space: normal;
   word-break: break-word;
   overflow-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.custom-table thead th {
+  background-color: #f2f5f8;
+  font-weight: 600;
+  color: #000;
 }
 
 .custom-table tbody tr:hover {
   background: #e8f4ff;
+}
+
+/* ======= Ukuran tetap per kolom ======= */
+.custom-table th:nth-child(1),
+.custom-table td:nth-child(1) {
+  width: 40px; /* No */
+}
+
+.custom-table th:nth-child(2),
+.custom-table td:nth-child(2) {
+  width: 140px; /* Username */
+}
+
+.custom-table th:nth-child(3),
+.custom-table td:nth-child(3) {
+  width: 100px; /* Point */
+}
+
+.custom-table th:nth-child(4),
+.custom-table td:nth-child(4) {
+  width: 180px; /* Latitude, Longitude */
+}
+
+.custom-table th:nth-child(5),
+.custom-table td:nth-child(5) {
+  width: 80px; /* Foto */
+}
+
+.custom-table th:nth-child(6),
+.custom-table td:nth-child(6) {
+  width: 200px; /* Deskripsi */
+}
+
+.custom-table th:nth-child(7),
+.custom-table td:nth-child(7) {
+  width: 100px; /* Aksi */
 }
 
 /* ======================== Pagination ======================== */
