@@ -1,38 +1,3 @@
-/* ===================== ROOT FONTS & COLORS ===================== */
-:root {
-  --default-font: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --heading-font: "Roboto", sans-serif;
-  --nav-font: "Poppins", sans-serif;
-
-  --background-color: #ffffff;
-  --default-color: #364d59;
-  --heading-color: #52565e;
-  --accent-color: #0059fe;
-  --surface-color: #ffffff;
-  --contrast-color: #ffffff;
-
-  --nav-color: rgba(255, 255, 255, 0.55);
-  --nav-hover-color: #ffffff;
-  --nav-mobile-background-color: #ffffff;
-
-  scroll-behavior: smooth;
-}
-
-.light-background {
-  --background-color: #f4f7f6;
-  --surface-color: #ffffff;
-}
-
-.dark-background {
-  --background-color: #060606;
-  --default-color: #ffffff;
-  --heading-color: #ffffff;
-  --surface-color: #252525;
-  --contrast-color: #ffffff;
-}
-
 /* ===================== GENERAL ===================== */
 body {
   color: var(--default-color);

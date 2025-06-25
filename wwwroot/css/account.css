@@ -37,6 +37,7 @@
   border-radius: 12px;
   overflow: hidden;
 }
+
 .toggle-btn {
   flex: 1;
   padding: 10px;
@@ -44,11 +45,18 @@
   background: transparent;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.3s;
+  transition: color 0.3s;
   color: #000;
   text-align: center;
   text-decoration: none;
 }
+
+/* Hover effect - hanya ubah warna teks */
+.toggle-btn:hover {
+  color: #4998ff; /* biru gelap */
+}
+
+/* Active tab */
 .toggle-btn.active {
   background: linear-gradient(to right, #002f6c, #007bff);
   color: white;
@@ -214,7 +222,7 @@
   color: #1d4ed8;
   text-decoration: none;
   transition: color 0.3s ease;
-  font-weight: semi-bold;
+  font-weight: 600;
 }
 
 .extra-links a:hover {
