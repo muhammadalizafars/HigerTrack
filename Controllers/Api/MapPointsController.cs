@@ -1,8 +1,4 @@
-using System;
-using System.IO;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +7,6 @@ using HigerTrack.Models;
 using HigerTrack.Models.Dto;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Globalization;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace HigerTrack.Controllers.Api
 {
@@ -34,7 +29,7 @@ namespace HigerTrack.Controllers.Api
         /// Membuat titik peta baru. Hanya untuk user yang sudah login.
         /// </summary>
         [HttpPost]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
         public async Task<IActionResult> CreateMapPoint([FromForm] MapPointDto dto)
         {
@@ -82,16 +77,15 @@ namespace HigerTrack.Controllers.Api
             return Ok(new { message = "Titik berhasil disimpan", id = mapPoint.Id });
         }
 
-        /// <summary>
-        /// Mengambil semua titik peta.
-        /// </summary>
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetMapPoints(
-    string? search = null,
-    int? id = null,
-    int page = 1,
-    int pageSize = 10)
+            string? search = null,
+            int? id = null,
+            int page = 1,
+            int pageSize = 10)
         {
             var baseUrl = $"{Request.Scheme}://{Request.Host}";
 
@@ -159,7 +153,7 @@ namespace HigerTrack.Controllers.Api
         /// Edit titik peta sesuai role.
         /// </summary>
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
         public async Task<IActionResult> EditMapPoint(int id, [FromForm] MapPointDto dto)
         {
@@ -209,7 +203,7 @@ namespace HigerTrack.Controllers.Api
         /// Hapus titik peta sesuai role.
         /// </summary>
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
         public async Task<IActionResult> DeleteMapPoint(int id)
         {
