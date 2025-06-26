@@ -107,6 +107,10 @@ function renderMarkers(data) {
                                     <input type="text" class="form-control" id="edit-lng-${item.id}" value="${item.longitude}" required />
                                 </div>
                                 <div class="mb-3">
+                                    <label class="form-label">Pilih Titik di Map</label>
+                                    <div class="edit-map" id="edit-map-${item.id}" style="height: 300px; width: 100%; border: 1px solid #ccc;"></div>
+                                </div>
+                                <div class="mb-3">
                                     <label class="form-label">Gambar (opsional)</label>
                                     <input type="file" class="form-control" id="edit-image-${item.id}" accept="image/*" />
                                 </div>
@@ -122,6 +126,67 @@ function renderMarkers(data) {
 
         tbody.insertAdjacentHTML("beforeend", row);
         modalsContainer.insertAdjacentHTML("beforeend", modal);
+
+        // Inisialisasi map pada modal edit saat modal ditampilkan
+        setTimeout(() => {
+            const editModal = document.getElementById(modalId);
+            if (editModal) {
+                editModal.addEventListener('shown.bs.modal', function () {
+                    const mapDiv = document.getElementById(`edit-map-${item.id}`);
+                    if (!mapDiv) return;
+                    // Cek jika sudah ada map instance di div ini
+                    if (!mapDiv._google_map_instance) {
+                        const lat = parseFloat(item.latitude);
+                        const lng = parseFloat(item.longitude);
+                        const editMap = new google.maps.Map(mapDiv, {
+                            center: { lat, lng },
+                            zoom: 14
+                        });
+                        const editMarker = new google.maps.Marker({
+                            position: { lat, lng },
+                            map: editMap,
+                            draggable: true
+                        });
+                        // Set marker dan map ke div agar tidak double inisialisasi
+                        mapDiv._google_map_instance = editMap;
+                        mapDiv._google_map_marker = editMarker;
+                        // Event klik pada map
+                        editMap.addListener('click', function (e) {
+                            const lat = e.latLng.lat();
+                            const lng = e.latLng.lng();
+                            document.getElementById(`edit-lat-${item.id}`).value = lat;
+                            document.getElementById(`edit-lng-${item.id}`).value = lng;
+                            editMarker.setPosition({ lat, lng });
+                        });
+                        // Event drag marker
+                        editMarker.addListener('dragend', function (e) {
+                            const lat = e.latLng.lat();
+                            const lng = e.latLng.lng();
+                            document.getElementById(`edit-lat-${item.id}`).value = lat;
+                            document.getElementById(`edit-lng-${item.id}`).value = lng;
+                        });
+                    } else {
+                        // Jika sudah ada, resize dan set center ke marker
+                        const editMap = mapDiv._google_map_instance;
+                        const editMarker = mapDiv._google_map_marker;
+                        google.maps.event.trigger(editMap, 'resize');
+                        editMap.setCenter(editMarker.getPosition());
+                    }
+                });
+                // Reset marker ke posisi awal saat modal ditutup
+                editModal.addEventListener('hidden.bs.modal', function () {
+                    const mapDiv = document.getElementById(`edit-map-${item.id}`);
+                    if (mapDiv && mapDiv._google_map_instance && mapDiv._google_map_marker) {
+                        const lat = parseFloat(item.latitude);
+                        const lng = parseFloat(item.longitude);
+                        mapDiv._google_map_instance.setCenter({ lat, lng });
+                        mapDiv._google_map_marker.setPosition({ lat, lng });
+                        document.getElementById(`edit-lat-${item.id}`).value = lat;
+                        document.getElementById(`edit-lng-${item.id}`).value = lng;
+                    }
+                });
+            }
+        }, 0);
 
         const position = {
             lat: parseFloat(item.latitude),
@@ -279,4 +344,62 @@ async function deleteMarker(id) {
     } else {
         alert("Gagal menghapus marker.");
     }
+}
+
+// --- Map for Add Modal ---
+let addMap;
+let addMapMarker;
+
+// Inisialisasi map saat modal tambah marker ditampilkan
+const addModal = document.getElementById('addModal');
+if (addModal) {
+    addModal.addEventListener('shown.bs.modal', function () {
+        // Hanya inisialisasi sekali
+        if (!addMap) {
+            const defaultLat = -6.914744;
+            const defaultLng = 107.60981;
+            addMap = new google.maps.Map(document.getElementById('add-map'), {
+                center: { lat: defaultLat, lng: defaultLng },
+                zoom: 12
+            });
+            addMapMarker = new google.maps.Marker({
+                position: { lat: defaultLat, lng: defaultLng },
+                map: addMap,
+                draggable: true
+            });
+            // Set input awal
+            document.getElementById('add-lat').value = defaultLat;
+            document.getElementById('add-lng').value = defaultLng;
+
+            // Event klik pada map
+            addMap.addListener('click', function (e) {
+                const lat = e.latLng.lat();
+                const lng = e.latLng.lng();
+                document.getElementById('add-lat').value = lat;
+                document.getElementById('add-lng').value = lng;
+                addMapMarker.setPosition({ lat, lng });
+            });
+            // Event drag marker
+            addMapMarker.addListener('dragend', function (e) {
+                const lat = e.latLng.lat();
+                const lng = e.latLng.lng();
+                document.getElementById('add-lat').value = lat;
+                document.getElementById('add-lng').value = lng;
+            });
+        } else {
+            google.maps.event.trigger(addMap, 'resize');
+            addMap.setCenter(addMapMarker.getPosition());
+        }
+    });
+    // Reset marker ke default saat modal ditutup
+    addModal.addEventListener('hidden.bs.modal', function () {
+        if (addMap && addMapMarker) {
+            const defaultLat = -6.914744;
+            const defaultLng = 107.60981;
+            addMap.setCenter({ lat: defaultLat, lng: defaultLng });
+            addMapMarker.setPosition({ lat: defaultLat, lng: defaultLng });
+            document.getElementById('add-lat').value = defaultLat;
+            document.getElementById('add-lng').value = defaultLng;
+        }
+    });
 }
