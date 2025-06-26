@@ -200,7 +200,11 @@ namespace HigerTrack.Controllers
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(p => EF.Functions.Like(p.Title, $"%{search}%"));
+                var searchLower = search.ToLower();
+                query = query.Where(p =>
+                    EF.Functions.Like(p.Title.ToLower(), $"%{searchLower}%") ||
+                    (p.CreatedUser != null && EF.Functions.Like(p.CreatedUser.FullName.ToLower(), $"%{searchLower}%"))
+                );
             }
 
 

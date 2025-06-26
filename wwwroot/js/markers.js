@@ -1,48 +1,48 @@
-let markers = [];
-let map;
-let currentPage = 1;
-let pageSize = 10;
+// --- Konstanta & Variabel Global ---
+const DEFAULT_CENTER = { lat: -6.914744, lng: 107.60981 };
+let map, markers = [], currentPage = 1, pageSize = 10;
+let addMap, addMapMarker;
 
+// =====================
+// Inisialisasi Map Utama
+// =====================
 function initMap() {
-    const center = { lat: -6.914744, lng: 107.60981 };
     map = new google.maps.Map(document.getElementById("map"), {
         zoom: 10,
-        center: center,
+        center: DEFAULT_CENTER,
     });
     loadMarkers();
 }
 
+// =====================
+// Event DOM Ready
+// =====================
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("entriesSelect").addEventListener("change", function () {
         pageSize = parseInt(this.value);
         currentPage = 1;
         loadMarkers();
     });
-
     document.getElementById("btnSearch").addEventListener("click", function () {
         currentPage = 1;
         loadMarkers();
     });
 });
 
+// =====================
+// Load & Render Marker
+// =====================
 async function loadMarkers() {
     const searchInput = document.getElementById("searchInput").value.trim();
     const url = new URL("/Home/GetMapPointsJson", window.location.origin);
-
     if (searchInput !== "") {
-        if (!isNaN(searchInput)) {
-            url.searchParams.append("id", searchInput);
-        } else {
-            url.searchParams.append("search", searchInput);
-        }
+        if (!isNaN(searchInput)) url.searchParams.append("id", searchInput);
+        else url.searchParams.append("search", searchInput);
     }
-
     url.searchParams.append("page", currentPage);
     url.searchParams.append("pageSize", pageSize);
-
     const response = await fetch(url, { credentials: "include" });
     const result = await response.json();
-
     renderMarkers(result.data);
     renderPagination(result.currentPage, result.totalPages);
 }
@@ -52,174 +52,111 @@ function renderMarkers(data) {
     const modalsContainer = document.getElementById("modalsContainer");
     tbody.innerHTML = "";
     modalsContainer.innerHTML = "";
-
-    // Hapus marker lama dari map
+    // Hapus marker lama dari map utama
     markers.forEach(m => m.setMap(null));
     markers = [];
-
     data.forEach((item, index) => {
-        const no = (currentPage - 1) * pageSize + index + 1;
-        const imageTag = item.imageUrl
-            ? `<img src="${item.imageUrl}" class="img-thumbnail rounded shadow-sm" style="width:60px;height:60px;object-fit:cover;" />`
-            : "";
-        const modalId = `editModal-${item.id}`;
-
-        // Baris tabel dengan judul yang bisa diklik
-        const row = `
-            <tr>
-                <td>${no}</td>
-                <td>${item.createdUserName ?? "-"}</td>
-                <td><a href="#" class="title-link" data-index="${index}">${item.title}</a></td>
-                <td>${item.latitude}, ${item.longitude}</td>
-                <td>${imageTag}</td>
-                <td>${item.description}</td>
-                <td>
-                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#${modalId}">Edit</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteMarker(${item.id})">Hapus</button>
-                </td>
-            </tr>`;
-
-        // Modal edit
-        const modal = `
-            <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form onsubmit="submitEditForm(event, ${item.id})">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Edit Marker</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label class="form-label">Judul</label>
-                                    <input type="text" class="form-control" id="edit-title-${item.id}" value="${item.title}" required />
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Deskripsi</label>
-                                    <textarea class="form-control" id="edit-desc-${item.id}" required>${item.description}</textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Latitude</label>
-                                    <input type="text" class="form-control" id="edit-lat-${item.id}" value="${item.latitude}" required />
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Longitude</label>
-                                    <input type="text" class="form-control" id="edit-lng-${item.id}" value="${item.longitude}" required />
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Pilih Titik di Map</label>
-                                    <div class="edit-map" id="edit-map-${item.id}" style="height: 300px; width: 100%; border: 1px solid #ccc;"></div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Gambar (opsional)</label>
-                                    <input type="file" class="form-control" id="edit-image-${item.id}" accept="image/*" />
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-success">Simpan</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>`;
-
-        tbody.insertAdjacentHTML("beforeend", row);
-        modalsContainer.insertAdjacentHTML("beforeend", modal);
-
-        // Inisialisasi map pada modal edit saat modal ditampilkan
-        setTimeout(() => {
-            const editModal = document.getElementById(modalId);
-            if (editModal) {
-                editModal.addEventListener('shown.bs.modal', function () {
-                    const mapDiv = document.getElementById(`edit-map-${item.id}`);
-                    if (!mapDiv) return;
-                    // Cek jika sudah ada map instance di div ini
-                    if (!mapDiv._google_map_instance) {
-                        const lat = parseFloat(item.latitude);
-                        const lng = parseFloat(item.longitude);
-                        const editMap = new google.maps.Map(mapDiv, {
-                            center: { lat, lng },
-                            zoom: 14
-                        });
-                        const editMarker = new google.maps.Marker({
-                            position: { lat, lng },
-                            map: editMap,
-                            draggable: true
-                        });
-                        // Set marker dan map ke div agar tidak double inisialisasi
-                        mapDiv._google_map_instance = editMap;
-                        mapDiv._google_map_marker = editMarker;
-                        // Event klik pada map
-                        editMap.addListener('click', function (e) {
-                            const lat = e.latLng.lat();
-                            const lng = e.latLng.lng();
-                            document.getElementById(`edit-lat-${item.id}`).value = lat;
-                            document.getElementById(`edit-lng-${item.id}`).value = lng;
-                            editMarker.setPosition({ lat, lng });
-                        });
-                        // Event drag marker
-                        editMarker.addListener('dragend', function (e) {
-                            const lat = e.latLng.lat();
-                            const lng = e.latLng.lng();
-                            document.getElementById(`edit-lat-${item.id}`).value = lat;
-                            document.getElementById(`edit-lng-${item.id}`).value = lng;
-                        });
-                    } else {
-                        // Jika sudah ada, resize dan set center ke marker
-                        const editMap = mapDiv._google_map_instance;
-                        const editMarker = mapDiv._google_map_marker;
-                        google.maps.event.trigger(editMap, 'resize');
-                        editMap.setCenter(editMarker.getPosition());
-                    }
-                });
-                // Reset marker ke posisi awal saat modal ditutup
-                editModal.addEventListener('hidden.bs.modal', function () {
-                    const mapDiv = document.getElementById(`edit-map-${item.id}`);
-                    if (mapDiv && mapDiv._google_map_instance && mapDiv._google_map_marker) {
-                        const lat = parseFloat(item.latitude);
-                        const lng = parseFloat(item.longitude);
-                        mapDiv._google_map_instance.setCenter({ lat, lng });
-                        mapDiv._google_map_marker.setPosition({ lat, lng });
-                        document.getElementById(`edit-lat-${item.id}`).value = lat;
-                        document.getElementById(`edit-lng-${item.id}`).value = lng;
-                    }
-                });
-            }
-        }, 0);
-
-        const position = {
-            lat: parseFloat(item.latitude),
-            lng: parseFloat(item.longitude)
-        };
-
-        const marker = new google.maps.Marker({
-            position,
-            map,
-            title: item.title,
-            icon: {
-                url: "/img/marker.png",   
-                scaledSize: new google.maps.Size(32, 32)
-            }
-        });
-
-        const infoWindow = new google.maps.InfoWindow({
-            content: `<div style="min-width:200px;">
-                ${item.imageUrl ? `<img src="${item.imageUrl}" style="width:100%;max-height:150px;object-fit:cover;border-radius:8px;margin-bottom:5px;" />` : ""}
-                <strong>${item.title}</strong><br/>
-                ${item.description}<br/>
-                <small>${item.latitude}, ${item.longitude}</small>,<br/>
-                <small>${item.createdAt}</small>
-            </div>`
-        });
-
-        marker.addListener("click", () => infoWindow.open(map, marker));
-
-        // Simpan marker dan InfoWindow dalam array marker
-        markers.push(marker);
+        renderMarkerRow(item, index, tbody, modalsContainer);
+        renderMarkerOnMap(item);
+        setupEditMapModal(item);
     });
+    setupTitleLinkEvents();
+}
 
-    // Tambahkan event listener ke semua judul setelah semua marker dibuat
+function renderMarkerRow(item, index, tbody, modalsContainer) {
+    const no = (currentPage - 1) * pageSize + index + 1;
+    const imageTag = item.imageUrl
+        ? `<img src="${item.imageUrl}" class="img-thumbnail rounded shadow-sm" style="width:60px;height:60px;object-fit:cover;" />`
+        : "";
+    const modalId = `editModal-${item.id}`;
+    const row = `
+        <tr>
+            <td>${no}</td>
+            <td>${item.createdUserName ?? "-"}</td>
+            <td><a href="#" class="title-link" data-index="${index}">${item.title}</a></td>
+            <td>${item.latitude}, ${item.longitude}</td>
+            <td>${imageTag}</td>
+            <td>${item.description}</td>
+            <td>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#${modalId}">Edit</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteMarker(${item.id})">Hapus</button>
+            </td>
+        </tr>`;
+    const modal = `
+        <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form onsubmit="submitEditForm(event, ${item.id})">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Marker</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Judul</label>
+                                <input type="text" class="form-control" id="edit-title-${item.id}" value="${item.title}" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Deskripsi</label>
+                                <textarea class="form-control" id="edit-desc-${item.id}" required>${item.description}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Latitude</label>
+                                <input type="text" class="form-control" id="edit-lat-${item.id}" value="${item.latitude}" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Longitude</label>
+                                <input type="text" class="form-control" id="edit-lng-${item.id}" value="${item.longitude}" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Pilih Titik di Map</label>
+                                <div class="edit-map" id="edit-map-${item.id}" style="height: 300px; width: 100%; border: 1px solid #ccc;"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Gambar (opsional)</label>
+                                <input type="file" class="form-control" id="edit-image-${item.id}" accept="image/*" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Simpan</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>`;
+    tbody.insertAdjacentHTML("beforeend", row);
+    modalsContainer.insertAdjacentHTML("beforeend", modal);
+}
+
+function renderMarkerOnMap(item) {
+    const position = {
+        lat: parseFloat(item.latitude),
+        lng: parseFloat(item.longitude)
+    };
+    const marker = new google.maps.Marker({
+        position,
+        map,
+        title: item.title,
+        icon: {
+            url: "/img/marker.png",
+            scaledSize: new google.maps.Size(32, 32)
+        }
+    });
+    const infoWindow = new google.maps.InfoWindow({
+        content: `<div style="min-width:200px;">
+            ${item.imageUrl ? `<img src="${item.imageUrl}" style="width:100%;max-height:150px;object-fit:cover;border-radius:8px;margin-bottom:5px;" />` : ""}
+            <strong>${item.title}</strong><br/>
+            ${item.description}<br/>
+            <small>${item.latitude}, ${item.longitude}</small>,<br/>
+            <small>${item.createdAt}</small>
+        </div>`
+    });
+    marker.addListener("click", () => infoWindow.open(map, marker));
+    markers.push(marker);
+}
+
+function setupTitleLinkEvents() {
     document.querySelectorAll(".title-link").forEach(link => {
         link.addEventListener("click", function (e) {
             e.preventDefault();
@@ -234,33 +171,133 @@ function renderMarkers(data) {
     });
 }
 
+// =====================
+// Map Modal Tambah Marker
+// =====================
+function setupAddMapModal() {
+    const addModal = document.getElementById('addModal');
+    if (!addModal) return;
+    addModal.addEventListener('shown.bs.modal', function () {
+        if (!addMap) {
+            addMap = new google.maps.Map(document.getElementById('add-map'), {
+                center: DEFAULT_CENTER,
+                zoom: 12
+            });
+            addMapMarker = new google.maps.Marker({
+                position: DEFAULT_CENTER,
+                map: addMap,
+                draggable: true
+            });
+            setAddLatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng);
+            addMap.addListener('click', function (e) {
+                setAddLatLng(e.latLng.lat(), e.latLng.lng());
+                addMapMarker.setPosition({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+            });
+            addMapMarker.addListener('dragend', function (e) {
+                setAddLatLng(e.latLng.lat(), e.latLng.lng());
+            });
+        } else {
+            google.maps.event.trigger(addMap, 'resize');
+            addMap.setCenter(addMapMarker.getPosition());
+        }
+    });
+    addModal.addEventListener('hidden.bs.modal', function () {
+        if (addMap && addMapMarker) {
+            addMap.setCenter(DEFAULT_CENTER);
+            addMapMarker.setPosition(DEFAULT_CENTER);
+            setAddLatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng);
+        }
+    });
+}
+function setAddLatLng(lat, lng) {
+    document.getElementById('add-lat').value = lat;
+    document.getElementById('add-lng').value = lng;
+}
+setupAddMapModal();
 
+// =====================
+// Map Modal Edit Marker
+// =====================
+function setupEditMapModal(item) {
+    const modalId = `editModal-${item.id}`;
+    setTimeout(() => {
+        const editModal = document.getElementById(modalId);
+        if (!editModal) return;
+        editModal.addEventListener('shown.bs.modal', function () {
+            const mapDiv = document.getElementById(`edit-map-${item.id}`);
+            if (!mapDiv) return;
+            if (!mapDiv._google_map_instance) {
+                const lat = parseFloat(item.latitude);
+                const lng = parseFloat(item.longitude);
+                const editMap = new google.maps.Map(mapDiv, {
+                    center: { lat, lng },
+                    zoom: 14
+                });
+                const editMarker = new google.maps.Marker({
+                    position: { lat, lng },
+                    map: editMap,
+                    draggable: true
+                });
+                mapDiv._google_map_instance = editMap;
+                mapDiv._google_map_marker = editMarker;
+                editMap.addListener('click', function (e) {
+                    setEditLatLng(item.id, e.latLng.lat(), e.latLng.lng());
+                    editMarker.setPosition({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+                });
+                editMarker.addListener('dragend', function (e) {
+                    setEditLatLng(item.id, e.latLng.lat(), e.latLng.lng());
+                });
+            } else {
+                const editMap = mapDiv._google_map_instance;
+                const editMarker = mapDiv._google_map_marker;
+                google.maps.event.trigger(editMap, 'resize');
+                editMap.setCenter(editMarker.getPosition());
+            }
+        });
+        editModal.addEventListener('hidden.bs.modal', function () {
+            const mapDiv = document.getElementById(`edit-map-${item.id}`);
+            if (mapDiv && mapDiv._google_map_instance && mapDiv._google_map_marker) {
+                const lat = parseFloat(item.latitude);
+                const lng = parseFloat(item.longitude);
+                mapDiv._google_map_instance.setCenter({ lat, lng });
+                mapDiv._google_map_marker.setPosition({ lat, lng });
+                setEditLatLng(item.id, lat, lng);
+            }
+        });
+    }, 0);
+}
+function setEditLatLng(id, lat, lng) {
+    document.getElementById(`edit-lat-${id}`).value = lat;
+    document.getElementById(`edit-lng-${id}`).value = lng;
+}
+
+// =====================
+// Pagination
+// =====================
 function renderPagination(current, total) {
     let html = `<nav aria-label="Page navigation"><ul class="pagination justify-content-center">`;
-
     html += `<li class="page-item ${current <= 1 ? "disabled" : ""}">
                 <button class="page-link" onclick="goToPage(${current - 1})">Previous</button>
              </li>`;
-
     for (let i = 1; i <= total; i++) {
         html += `<li class="page-item ${i === current ? "active" : ""}">
                     <button class="page-link" onclick="goToPage(${i})">${i}</button>
                  </li>`;
     }
-
     html += `<li class="page-item ${current >= total ? "disabled" : ""}">
                 <button class="page-link" onclick="goToPage(${current + 1})">Next</button>
              </li>`;
-
     html += `</ul></nav>`;
     document.querySelector(".pagination-container").innerHTML = html;
 }
-
 function goToPage(page) {
     currentPage = page;
     loadMarkers();
 }
 
+// =====================
+// CRUD Handler
+// =====================
 async function submitAddForm(e) {
     e.preventDefault();
     const formData = new FormData();
@@ -270,13 +307,11 @@ async function submitAddForm(e) {
     formData.append("Longitude", document.getElementById("add-lng").value);
     const image = document.getElementById("add-image").files[0];
     if (image) formData.append("Image", image);
-
     const response = await fetch("/Home/CreateMapPoint", {
         method: "POST",
         body: formData,
         credentials: "include"
     });
-
     if (response.ok) {
         alert("Marker berhasil ditambahkan.");
         location.reload();
@@ -287,7 +322,6 @@ async function submitAddForm(e) {
 
 async function submitEditForm(e, id) {
     e.preventDefault();
-
     const formData = new FormData();
     formData.append("Title", document.getElementById(`edit-title-${id}`).value);
     formData.append("Description", document.getElementById(`edit-desc-${id}`).value);
@@ -295,111 +329,39 @@ async function submitEditForm(e, id) {
     formData.append("Longitude", document.getElementById(`edit-lng-${id}`).value);
     const image = document.getElementById(`edit-image-${id}`).files[0];
     if (image) formData.append("Image", image);
-
     const response = await fetch(`/Home/EditMapPoint?id=${id}`, {
         method: "POST",
         body: formData,
         credentials: "include"
     });
-
     if (response.ok) {
         alert("Marker berhasil diperbarui.");
-
-        // Tutup modal dengan aman
         const modalElement = document.getElementById(`editModal-${id}`);
         const modalInstance = bootstrap.Modal.getInstance(modalElement);
         if (modalInstance) modalInstance.hide();
-
-        // Tunggu sejenak agar modal benar-benar hilang
         setTimeout(() => {
-            // Hapus backdrop
             document.querySelectorAll(".modal-backdrop").forEach(el => el.remove());
-
-            // Bersihkan class dan style body/html
             document.body.classList.remove("modal-open");
             document.documentElement.style.overflow = "auto";
             document.body.style.overflow = "auto";
-            document.body.style.paddingRight = "0"; // kadang bootstrap menambahkan padding saat modal tampil
-
-            // Load ulang data
+            document.body.style.paddingRight = "0";
             loadMarkers();
-        }, 300); // waktu aman setelah animasi modal selesai
+        }, 300);
     } else {
         alert("Gagal memperbarui marker.");
     }
 }
 
-
 async function deleteMarker(id) {
     if (!confirm("Yakin ingin menghapus marker ini?")) return;
-
     const response = await fetch(`/Home/DeleteMapPoint?id=${id}`, {
         method: "POST",
         credentials: "include"
     });
-
     if (response.ok) {
         alert("Berhasil menghapus marker.");
         loadMarkers();
     } else {
         alert("Gagal menghapus marker.");
     }
-}
-
-// --- Map for Add Modal ---
-let addMap;
-let addMapMarker;
-
-// Inisialisasi map saat modal tambah marker ditampilkan
-const addModal = document.getElementById('addModal');
-if (addModal) {
-    addModal.addEventListener('shown.bs.modal', function () {
-        // Hanya inisialisasi sekali
-        if (!addMap) {
-            const defaultLat = -6.914744;
-            const defaultLng = 107.60981;
-            addMap = new google.maps.Map(document.getElementById('add-map'), {
-                center: { lat: defaultLat, lng: defaultLng },
-                zoom: 12
-            });
-            addMapMarker = new google.maps.Marker({
-                position: { lat: defaultLat, lng: defaultLng },
-                map: addMap,
-                draggable: true
-            });
-            // Set input awal
-            document.getElementById('add-lat').value = defaultLat;
-            document.getElementById('add-lng').value = defaultLng;
-
-            // Event klik pada map
-            addMap.addListener('click', function (e) {
-                const lat = e.latLng.lat();
-                const lng = e.latLng.lng();
-                document.getElementById('add-lat').value = lat;
-                document.getElementById('add-lng').value = lng;
-                addMapMarker.setPosition({ lat, lng });
-            });
-            // Event drag marker
-            addMapMarker.addListener('dragend', function (e) {
-                const lat = e.latLng.lat();
-                const lng = e.latLng.lng();
-                document.getElementById('add-lat').value = lat;
-                document.getElementById('add-lng').value = lng;
-            });
-        } else {
-            google.maps.event.trigger(addMap, 'resize');
-            addMap.setCenter(addMapMarker.getPosition());
-        }
-    });
-    // Reset marker ke default saat modal ditutup
-    addModal.addEventListener('hidden.bs.modal', function () {
-        if (addMap && addMapMarker) {
-            const defaultLat = -6.914744;
-            const defaultLng = 107.60981;
-            addMap.setCenter({ lat: defaultLat, lng: defaultLng });
-            addMapMarker.setPosition({ lat: defaultLat, lng: defaultLng });
-            document.getElementById('add-lat').value = defaultLat;
-            document.getElementById('add-lng').value = defaultLng;
-        }
-    });
 }

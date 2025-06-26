@@ -98,7 +98,7 @@ namespace HigerTrack.Controllers.Api
                 userRole = User.Claims.FirstOrDefault(c => c.Type.Contains("role"))?.Value;
             }
 
-            var query = _context.MapPoints.AsQueryable();
+            var query = _context.MapPoints.Include(p => p.CreatedUser).AsQueryable();
 
             if (userRole != "Admin" && userId != null)
             {
@@ -111,10 +111,14 @@ namespace HigerTrack.Controllers.Api
                 query = query.Where(p => p.Id == id.Value);
             }
 
-            // 🔍 Search by title (case-insensitive)
+            // 🔍 Search by title or creator name (case-insensitive)
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(p => p.Title.ToLower().Contains(search.ToLower()));
+                var searchLower = search.ToLower();
+                query = query.Where(p =>
+                    p.Title.ToLower().Contains(searchLower) ||
+                    (p.CreatedUser != null && p.CreatedUser.FullName.ToLower().Contains(searchLower))
+                );
             }
 
             var totalCount = await query.CountAsync();
