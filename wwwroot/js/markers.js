@@ -1,17 +1,18 @@
-// --- Fungsi Format Tanggal ---
+// =====================
+// Utilities
+// =====================
 function formatDateTime(dateString) {
     const date = new Date(dateString);
     const pad = n => String(n).padStart(2, '0');
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 }
 
-// --- Konstanta & Variabel Global ---
 const DEFAULT_CENTER = { lat: -6.914744, lng: 107.60981 };
 let map, markers = [], currentPage = 1, pageSize = 10;
 let addMap, addMapMarker;
 
 // =====================
-// Inisialisasi Map Utama
+// Map Initialization
 // =====================
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
@@ -22,7 +23,7 @@ function initMap() {
 }
 
 // =====================
-// Event DOM Ready
+// DOM Event Bindings
 // =====================
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("entriesSelect").addEventListener("change", function () {
@@ -34,10 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
         currentPage = 1;
         loadMarkers();
     });
+    setupAddMapModal();
 });
 
 // =====================
-// Load & Render Marker
+// Marker Loading & Rendering
 // =====================
 async function loadMarkers() {
     const searchInput = document.getElementById("searchInput").value.trim();
@@ -88,7 +90,13 @@ function renderMarkerRow(item, index, tbody, modalsContainer) {
                 <button class="btn btn-sm btn-danger" onclick="deleteMarker(${item.id})">Hapus</button>
             </td>
         </tr>`;
-    const modal = `
+    const modal = getEditModalHtml(item, modalId);
+    tbody.insertAdjacentHTML("beforeend", row);
+    modalsContainer.insertAdjacentHTML("beforeend", modal);
+}
+
+function getEditModalHtml(item, modalId) {
+    return `
         <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -131,8 +139,6 @@ function renderMarkerRow(item, index, tbody, modalsContainer) {
                 </div>
             </div>
         </div>`;
-    tbody.insertAdjacentHTML("beforeend", row);
-    modalsContainer.insertAdjacentHTML("beforeend", modal);
 }
 
 function renderMarkerOnMap(item) {
@@ -140,8 +146,7 @@ function renderMarkerOnMap(item) {
         lat: parseFloat(item.latitude),
         lng: parseFloat(item.longitude)
     };
-    const formattedDate = formatDateTime(item.createdAt); // Format tanggal
-
+    const formattedDate = formatDateTime(item.createdAt);
     const marker = new google.maps.Marker({
         position,
         map,
@@ -180,7 +185,7 @@ function setupTitleLinkEvents() {
 }
 
 // =====================
-// Map Modal Tambah Marker
+// Add Marker Modal Map
 // =====================
 function setupAddMapModal() {
     const addModal = document.getElementById('addModal');
@@ -221,10 +226,9 @@ function setAddLatLng(lat, lng) {
     document.getElementById('add-lat').value = lat;
     document.getElementById('add-lng').value = lng;
 }
-setupAddMapModal();
 
 // =====================
-// Map Modal Edit Marker
+// Edit Marker Modal Map
 // =====================
 function setupEditMapModal(item) {
     const modalId = `editModal-${item.id}`;
@@ -304,7 +308,7 @@ function goToPage(page) {
 }
 
 // =====================
-// CRUD Handler
+// CRUD Handlers
 // =====================
 async function submitAddForm(e) {
     e.preventDefault();
