@@ -1,3 +1,10 @@
+// --- Fungsi Format Tanggal ---
+function formatDateTime(dateString) {
+    const date = new Date(dateString);
+    const pad = n => String(n).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
 // --- Konstanta & Variabel Global ---
 const DEFAULT_CENTER = { lat: -6.914744, lng: 107.60981 };
 let map, markers = [], currentPage = 1, pageSize = 10;
@@ -52,7 +59,6 @@ function renderMarkers(data) {
     const modalsContainer = document.getElementById("modalsContainer");
     tbody.innerHTML = "";
     modalsContainer.innerHTML = "";
-    // Hapus marker lama dari map utama
     markers.forEach(m => m.setMap(null));
     markers = [];
     data.forEach((item, index) => {
@@ -134,6 +140,8 @@ function renderMarkerOnMap(item) {
         lat: parseFloat(item.latitude),
         lng: parseFloat(item.longitude)
     };
+    const formattedDate = formatDateTime(item.createdAt); // Format tanggal
+
     const marker = new google.maps.Marker({
         position,
         map,
@@ -149,7 +157,7 @@ function renderMarkerOnMap(item) {
             <strong>${item.title}</strong><br/>
             ${item.description}<br/>
             <small>${item.latitude}, ${item.longitude}</small>,<br/>
-            <small>${item.createdAt}</small>
+            <small>${formattedDate}</small>
         </div>`
     });
     marker.addListener("click", () => infoWindow.open(map, marker));

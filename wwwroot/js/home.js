@@ -1,60 +1,65 @@
- let markers = [];
-    let map;
+let markers = [];
+let map;
 
-    function initMap() {
-        var center = { lat: -6.914744, lng: 107.60981 };
-        map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 10,
-            center: center,
-        });
+function initMap() {
+    var center = { lat: -6.914744, lng: 107.60981 };
+    map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 10,
+        center: center,
+    });
+    loadMarkers();
+}
+
+let currentPage = 1;
+let pageSize = 10;
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("entriesSelect").addEventListener("change", function () {
+        pageSize = parseInt(this.value);
+        currentPage = 1;
         loadMarkers();
-    }
-
-    let currentPage = 1;
-    let pageSize = 10;
-
-    document.addEventListener("DOMContentLoaded", () => {
-        document.getElementById("entriesSelect").addEventListener("change", function () {
-            pageSize = parseInt(this.value);
-            currentPage = 1;
-            loadMarkers();
-        });
-
-        document.getElementById("btnSearch").addEventListener("click", function () {
-            currentPage = 1;
-            loadMarkers();
-        });
     });
 
-    async function loadMarkers() {
-        const searchInput = document.getElementById("searchInput").value.trim();
-        const url = new URL("/api/MapPoints", window.location.origin);
+    document.getElementById("btnSearch").addEventListener("click", function () {
+        currentPage = 1;
+        loadMarkers();
+    });
+});
 
-        if (searchInput !== "") {
-            if (!isNaN(searchInput)) {
-                url.searchParams.append("id", searchInput);
-            } else {
-                url.searchParams.append("search", searchInput);
-            }
+async function loadMarkers() {
+    const searchInput = document.getElementById("searchInput").value.trim();
+    const url = new URL("/api/MapPoints", window.location.origin);
+
+    if (searchInput !== "") {
+        if (!isNaN(searchInput)) {
+            url.searchParams.append("id", searchInput);
+        } else {
+            url.searchParams.append("search", searchInput);
         }
-
-        url.searchParams.append("page", currentPage);
-        url.searchParams.append("pageSize", pageSize);
-
-        const response = await fetch(url, { credentials: "include" });
-        const result = await response.json();
-
-        renderMarkers(result.data);
-        renderPagination(result.currentPage, result.totalPages);
     }
 
-    function renderMarkers(data) {
+    url.searchParams.append("page", currentPage);
+    url.searchParams.append("pageSize", pageSize);
+
+    const response = await fetch(url, { credentials: "include" });
+    const result = await response.json();
+
+    renderMarkers(result.data);
+    renderPagination(result.currentPage, result.totalPages);
+}
+
+function formatDateTime(dateString) {
+    const date = new Date(dateString);
+    const pad = n => String(n).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
+function renderMarkers(data) {
     const tbody = document.querySelector("#markerTable tbody");
     const modalsContainer = document.getElementById("modalsContainer");
     tbody.innerHTML = "";
     modalsContainer.innerHTML = "";
 
-    // Hapus marker lama dari map
     markers.forEach(m => m.setMap(null));
     markers = [];
 
@@ -63,9 +68,8 @@
         const imageTag = item.imageUrl
             ? `<img src="${item.imageUrl}" class="img-thumbnail rounded shadow-sm" style="width:60px;height:60px;object-fit:cover;" />`
             : "";
-        const modalId = `editModal-${item.id}`;
+        const formattedDate = formatDateTime(item.createdAt);
 
-        // Baris tabel dengan judul yang bisa diklik
         const row = `
             <tr>
                 <td>${no}</td>
@@ -88,7 +92,7 @@
             map,
             title: item.title,
             icon: {
-                url: "/img/marker.png",   
+                url: "/img/marker.png",
                 scaledSize: new google.maps.Size(32, 32)
             }
         });
@@ -99,17 +103,14 @@
                 <strong>${item.title}</strong><br/>
                 ${item.description}<br/>
                 <small>${item.latitude}, ${item.longitude}</small>,<br/>
-                <small>${item.createdAt}</small>
+                <small>${formattedDate}</small>
             </div>`
         });
 
         marker.addListener("click", () => infoWindow.open(map, marker));
-
-        // Simpan marker dan InfoWindow dalam array marker
         markers.push(marker);
     });
 
-    // Tambahkan event listener ke semua judul setelah semua marker dibuat
     document.querySelectorAll(".title-link").forEach(link => {
         link.addEventListener("click", function (e) {
             e.preventDefault();
@@ -124,53 +125,49 @@
     });
 }
 
-    function renderPagination(current, total) {
-        let html = `<nav aria-label="Page navigation">`;
-        html += `<ul class="pagination justify-content-center">`;
+function renderPagination(current, total) {
+    let html = `<nav aria-label="Page navigation">`;
+    html += `<ul class="pagination justify-content-center">`;
 
-        // Tombol Previous
-        if (current > 1) {
-            html += `<li class="page-item">
-                    <button class="page-link" onclick="goToPage(${current - 1})">Previous</button>
-                 </li>`;
-        } else {
-            html += `<li class="page-item disabled">
-                    <span class="page-link">Previous</span>
-                 </li>`;
-        }
-
-        // Nomor halaman
-        for (let i = 1; i <= total; i++) {
-            if (i === current) {
-                html += `<li class="page-item active" aria-current="page">
-                        <span class="page-link">${i}</span>
-                     </li>`;
-            } else {
-                html += `<li class="page-item">
-                        <button class="page-link" onclick="goToPage(${i})">${i}</button>
-                     </li>`;
-            }
-        }
-
-        // Tombol Next
-        if (current < total) {
-            html += `<li class="page-item">
-                    <button class="page-link" onclick="goToPage(${current + 1})">Next</button>
-                 </li>`;
-        } else {
-            html += `<li class="page-item disabled">
-                    <span class="page-link">Next</span>
-                 </li>`;
-        }
-
-        html += `</ul></nav>`;
-
-        const container = document.querySelector(".pagination-container");
-        if (container) container.innerHTML = html;
+    if (current > 1) {
+        html += `<li class="page-item">
+                <button class="page-link" onclick="goToPage(${current - 1})">Previous</button>
+             </li>`;
+    } else {
+        html += `<li class="page-item disabled">
+                <span class="page-link">Previous</span>
+             </li>`;
     }
 
-
-    function goToPage(page) {
-        currentPage = page;
-        loadMarkers();
+    for (let i = 1; i <= total; i++) {
+        if (i === current) {
+            html += `<li class="page-item active" aria-current="page">
+                    <span class="page-link">${i}</span>
+                 </li>`;
+        } else {
+            html += `<li class="page-item">
+                    <button class="page-link" onclick="goToPage(${i})">${i}</button>
+                 </li>`;
+        }
     }
+
+    if (current < total) {
+        html += `<li class="page-item">
+                <button class="page-link" onclick="goToPage(${current + 1})">Next</button>
+             </li>`;
+    } else {
+        html += `<li class="page-item disabled">
+                <span class="page-link">Next</span>
+             </li>`;
+    }
+
+    html += `</ul></nav>`;
+
+    const container = document.querySelector(".pagination-container");
+    if (container) container.innerHTML = html;
+}
+
+function goToPage(page) {
+    currentPage = page;
+    loadMarkers();
+}
